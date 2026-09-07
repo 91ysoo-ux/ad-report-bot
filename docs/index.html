@@ -183,6 +183,32 @@
   .chart-legend .sw.bad { background: var(--status-bad); }
   .chart-legend .sw.mid { background: var(--surface-3); border: 1px solid var(--border-2); }
 
+  /* ---- monthly / period summary tables ---- */
+  .table-scroll { overflow-x: auto; margin-top: 14px; }
+  table.summary-table, table.period-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .summary-table th, .period-table th {
+    text-align: right; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--muted); padding: 0 10px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .summary-table th:first-child, .period-table th:nth-child(2) { text-align: left; }
+  .summary-table td, .period-table td {
+    padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px;
+    text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .summary-table td:first-child, .period-table td:nth-child(2) { text-align: left; }
+  .summary-table tr:last-child td, .period-table tr.period-row:last-child td { border-bottom: none; }
+  .platform-cell { display: inline-flex; align-items: center; gap: 5px; }
+  .platform-cell .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .platform-cell.meta .dot { background: var(--meta); }
+  .platform-cell.tiktok .dot { background: var(--amber); }
+  .platform-cell.empty { color: var(--muted); }
+  .period-row { cursor: pointer; }
+  .period-row:hover { background: var(--surface-2); }
+  .period-row .caret { color: var(--muted); font-size: 11px; transition: transform 0.15s ease; display: inline-block; }
+  .period-row.open .caret { transform: rotate(90deg); }
+  .period-detail-row td { padding: 14px 10px 18px; border-bottom: 1px solid var(--border); }
+  .period-cpv { font-weight: 700; }
+
   /* ---- per-setting detail cards ---- */
   .detail-list { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
   .detail-card {
@@ -261,6 +287,21 @@
 
   <div class="card">
     <div class="section-head">
+      <div class="section-title">월별 통합 성과 (Meta + TikTok)</div>
+      <div class="section-sub">한 달에 얼마 쓰고 얼마 조회됐는지 · 틱톡 연동 전이라 지금은 Meta만 집계됨</div>
+    </div>
+    <div class="table-scroll">
+      <table class="summary-table">
+        <thead>
+          <tr><th>월</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th></tr>
+        </thead>
+        <tbody id="monthRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
       <div class="section-title">세팅별 광고 효율 비교 (광고비 ÷ 3초조회수)</div>
       <div class="section-sub">막대가 낮을수록 조회 1회당 비용이 저렴함 · 이름의 앞자리는 집행 시작일</div>
     </div>
@@ -279,10 +320,17 @@
 
   <div>
     <div class="section-head">
-      <div class="section-title">세팅별 상세 — 예산·타겟·목표와 결과</div>
-      <div class="section-sub">하나의 카드 = 하나의 광고그룹(세팅) · 날짜순 정렬 · 흐린 카드는 현재 중지 상태</div>
+      <div class="section-title">캠페인 기간별 통합 성과 — 클릭해서 세팅 상세 보기</div>
+      <div class="section-sub">기간 = 같은 날 시작한 세팅 묶음(Meta+TikTok 동시 집행 기준) · 행을 누르면 개별 세팅이 펼쳐짐</div>
     </div>
-    <div class="detail-list" id="detailList"></div>
+    <div class="table-scroll">
+      <table class="period-table">
+        <thead>
+          <tr><th></th><th>기간</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th><th>Meta</th><th>TikTok</th></tr>
+        </thead>
+        <tbody id="periodRows"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="guide">
@@ -298,8 +346,8 @@
 
 <script>
   // 이 블록은 src/report.py가 매 실행마다 통째로 교체합니다.
-  const CAMPAIGNS = [{"platform": "meta", "campaign_id": "120232487906640203", "campaign_name": "250905_브랜딩영상", "adset_id": "120232487907070203", "adset_name": "세계속금별맥주", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 71000, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": [], "spend": 746780.0, "impressions": 634732, "reach": 539615, "ad_views_3s": 42884, "completion_views": 1009, "completion_rate": 2.4, "cpv": 17.41}, {"platform": "meta", "campaign_id": "120233728535570203", "campaign_name": "20251001_브랜딩_엄마맥주", "adset_id": "120233728535580203", "adset_name": "20251001_브랜딩_엄마맥주", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 70000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 319389.0, "impressions": 261535, "reach": 253736, "ad_views_3s": 6187, "completion_views": 166, "completion_rate": 2.7, "cpv": 51.62}, {"platform": "meta", "campaign_id": "120233856510490203", "campaign_name": "20251002_브랜딩_명화", "adset_id": "120233856510500203", "adset_name": "20251002_브랜딩_명화", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 50000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 169337.0, "impressions": 136738, "reach": 129542, "ad_views_3s": 5730, "completion_views": 85, "completion_rate": 1.5, "cpv": 29.55}, {"platform": "meta", "campaign_id": "120236167903370203", "campaign_name": "251104_메티즌x금별", "adset_id": "120236167903760203", "adset_name": "251104_메티즌x금별", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 142800, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": ["instagram"], "spend": 970391.0, "impressions": 633340, "reach": 609991, "ad_views_3s": 79881, "completion_views": 91, "completion_rate": 0.1, "cpv": 12.15}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217289450203", "adset_name": "260126_항정살 숙주볶음 우동_신메뉴 1차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 287268.0, "impressions": 239423, "reach": 192107, "ad_views_3s": 13934, "completion_views": 166, "completion_rate": 1.2, "cpv": 20.62}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427740203", "adset_name": "260126_부대찌개_신메뉴 1차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 60287.0, "impressions": 49933, "reach": 42183, "ad_views_3s": 2405, "completion_views": 53, "completion_rate": 2.2, "cpv": 25.07}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427750203", "adset_name": "260126_통새우 가라아게_신메뉴 1차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 52427.0, "impressions": 44377, "reach": 37859, "ad_views_3s": 4818, "completion_views": 35, "completion_rate": 0.7, "cpv": 10.88}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444641820203", "adset_name": "260202_한우대창 전골_신메뉴 2차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 1629.0, "impressions": 1790, "reach": 1770, "ad_views_3s": 293, "completion_views": 0, "completion_rate": 0.0, "cpv": 5.56}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444749940203", "adset_name": "260202_뿌링클 콘립_신메뉴 2차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 7939.0, "impressions": 7686, "reach": 6635, "ad_views_3s": 1191, "completion_views": 38, "completion_rate": 3.2, "cpv": 6.67}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444833250203", "adset_name": "260202_모둠꼬치어묵탕_신메뉴 2차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 200193.0, "impressions": 175731, "reach": 138345, "ad_views_3s": 6155, "completion_views": 20, "completion_rate": 0.3, "cpv": 32.53}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444854270203", "adset_name": "260202_종합_신메뉴 2차", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 290127.0, "impressions": 262221, "reach": 189751, "ad_views_3s": 6206, "completion_views": 236, "completion_rate": 3.8, "cpv": 46.75}, {"platform": "meta", "campaign_id": "120243455854640203", "campaign_name": "260409_금쪽같은알바생 별이", "adset_id": "120243455854650203", "adset_name": "260409_ep1,2", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 91000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 460448.0, "impressions": 412691, "reach": 251574, "ad_views_3s": 21540, "completion_views": 1700, "completion_rate": 7.9, "cpv": 21.38}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "금쪽같은알바생 별이_인지도", "adset_id": "120246343370710203", "adset_name": "260518_ep3_인지도", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224014.0, "impressions": 182053, "reach": 114207, "ad_views_3s": 2926, "completion_views": 24, "completion_rate": 0.8, "cpv": 76.56}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "금쪽같은알바생 별이_트래픽", "adset_id": "120246345567270203", "adset_name": "260518_ep3_트래픽", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 68437.0, "impressions": 2800, "reach": 2406, "ad_views_3s": 525, "completion_views": 52, "completion_rate": 9.9, "cpv": 130.36}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "금쪽같은알바생 별이_트래픽", "adset_id": "120247698382770203", "adset_name": "260601_ep.5_트래픽", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 67950.0, "impressions": 5218, "reach": 4687, "ad_views_3s": 988, "completion_views": 20, "completion_rate": 2.0, "cpv": 68.78}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "금쪽같은알바생 별이_인지도", "adset_id": "120247698816380203", "adset_name": "260601_ep5_인지도", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224289.0, "impressions": 174047, "reach": 108236, "ad_views_3s": 11293, "completion_views": 67, "completion_rate": 0.6, "cpv": 19.86}, {"platform": "meta", "campaign_id": "120250417757330203", "campaign_name": "260703_금쪽같은알바생 별이 ep7", "adset_id": "120250417757340203", "adset_name": "260703_금쪽같은알바생 별이 ep7", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 31800, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 202518.0, "impressions": 217609, "reach": 153529, "ad_views_3s": 24949, "completion_views": 158, "completion_rate": 0.6, "cpv": 8.12}, {"platform": "meta", "campaign_id": "120250803602480203", "campaign_name": "260716_2026년 상반기 신메뉴 출시", "adset_id": "120250803602500203", "adset_name": "260716_2026년 상반기 신메뉴 출시", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 31800, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 200886.0, "impressions": 232697, "reach": 171624, "ad_views_3s": 19335, "completion_views": 837, "completion_rate": 4.3, "cpv": 10.39}, {"platform": "meta", "campaign_id": "120251204442560203", "campaign_name": "260803_금쪽같은알바생 별이", "adset_id": "120251204442580203", "adset_name": "260803_금쪽같은알바생 별이", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 32000, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203923.0, "impressions": 183480, "reach": 108380, "ad_views_3s": 4729, "completion_views": 80, "completion_rate": 1.7, "cpv": 43.12}, {"platform": "meta", "campaign_id": "120251424785880203", "campaign_name": "2609_ep9", "adset_id": "120251424785890203", "adset_name": "2609_ep9", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 7000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 44168.0, "impressions": 13941, "reach": 13169, "ad_views_3s": 8491, "completion_views": 373, "completion_rate": 4.4, "cpv": 5.2}, {"platform": "meta", "campaign_id": "120251729011550203", "campaign_name": "260824_달프토_참여", "adset_id": "120251729011560203", "adset_name": "260824_달프토_참여", "status": "ACTIVE", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203890.0, "impressions": 76005, "reach": 65190, "ad_views_3s": 43430, "completion_views": 3372, "completion_rate": 7.8, "cpv": 4.69}, {"platform": "meta", "campaign_id": "120251813215550203", "campaign_name": "260831_짭명란_참여", "adset_id": "120251813215570203", "adset_name": "260831_짭명란_참여", "status": "ACTIVE", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 201382.0, "impressions": 58318, "reach": 48717, "ad_views_3s": 32810, "completion_views": 6654, "completion_rate": 20.3, "cpv": 6.14}];
-  const UPDATED_AT = "2026-09-07 12:26 KST";
+  const CAMPAIGNS = [{"platform": "meta", "campaign_id": "120232487906640203", "campaign_name": "250905_브랜딩영상", "adset_id": "120232487907070203", "adset_name": "세계속금별맥주", "date": "2025-09-05", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 71000, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": [], "spend": 746780.0, "impressions": 634732, "reach": 539615, "ad_views_3s": 42884, "views": 42884, "completion_views": 1009, "completion_rate": 2.4, "cpv": 17.41}, {"platform": "meta", "campaign_id": "120233728535570203", "campaign_name": "20251001_브랜딩_엄마맥주", "adset_id": "120233728535580203", "adset_name": "20251001_브랜딩_엄마맥주", "date": "2025-10-01", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 70000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 319389.0, "impressions": 261535, "reach": 253736, "ad_views_3s": 6187, "views": 6187, "completion_views": 166, "completion_rate": 2.7, "cpv": 51.62}, {"platform": "meta", "campaign_id": "120233856510490203", "campaign_name": "20251002_브랜딩_명화", "adset_id": "120233856510500203", "adset_name": "20251002_브랜딩_명화", "date": "2025-10-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 50000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 169337.0, "impressions": 136738, "reach": 129542, "ad_views_3s": 5730, "views": 5730, "completion_views": 85, "completion_rate": 1.5, "cpv": 29.55}, {"platform": "meta", "campaign_id": "120236167903370203", "campaign_name": "251104_메티즌x금별", "adset_id": "120236167903760203", "adset_name": "251104_메티즌x금별", "date": "2025-11-04", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 142800, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": ["instagram"], "spend": 970391.0, "impressions": 633340, "reach": 609991, "ad_views_3s": 79881, "views": 79881, "completion_views": 91, "completion_rate": 0.1, "cpv": 12.15}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217289450203", "adset_name": "260126_항정살 숙주볶음 우동_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 287268.0, "impressions": 239423, "reach": 192107, "ad_views_3s": 13934, "views": 13934, "completion_views": 166, "completion_rate": 1.2, "cpv": 20.62}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427740203", "adset_name": "260126_부대찌개_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 60287.0, "impressions": 49933, "reach": 42183, "ad_views_3s": 2405, "views": 2405, "completion_views": 53, "completion_rate": 2.2, "cpv": 25.07}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427750203", "adset_name": "260126_통새우 가라아게_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 52427.0, "impressions": 44377, "reach": 37859, "ad_views_3s": 4818, "views": 4818, "completion_views": 35, "completion_rate": 0.7, "cpv": 10.88}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444641820203", "adset_name": "260202_한우대창 전골_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 1629.0, "impressions": 1790, "reach": 1770, "ad_views_3s": 293, "views": 293, "completion_views": 0, "completion_rate": 0.0, "cpv": 5.56}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444749940203", "adset_name": "260202_뿌링클 콘립_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 7939.0, "impressions": 7686, "reach": 6635, "ad_views_3s": 1191, "views": 1191, "completion_views": 38, "completion_rate": 3.2, "cpv": 6.67}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444833250203", "adset_name": "260202_모둠꼬치어묵탕_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 200193.0, "impressions": 175731, "reach": 138345, "ad_views_3s": 6155, "views": 6155, "completion_views": 20, "completion_rate": 0.3, "cpv": 32.53}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444854270203", "adset_name": "260202_종합_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 290127.0, "impressions": 262221, "reach": 189751, "ad_views_3s": 6206, "views": 6206, "completion_views": 236, "completion_rate": 3.8, "cpv": 46.75}, {"platform": "meta", "campaign_id": "120243455854640203", "campaign_name": "260409_금쪽같은알바생 별이", "adset_id": "120243455854650203", "adset_name": "260409_ep1,2", "date": "2026-04-09", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 91000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 460448.0, "impressions": 412691, "reach": 251574, "ad_views_3s": 21540, "views": 21540, "completion_views": 1700, "completion_rate": 7.9, "cpv": 21.38}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "금쪽같은알바생 별이_인지도", "adset_id": "120246343370710203", "adset_name": "260518_ep3_인지도", "date": "2026-05-18", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224014.0, "impressions": 182053, "reach": 114207, "ad_views_3s": 2926, "views": 2926, "completion_views": 24, "completion_rate": 0.8, "cpv": 76.56}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "금쪽같은알바생 별이_트래픽", "adset_id": "120246345567270203", "adset_name": "260518_ep3_트래픽", "date": "2026-05-18", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 68437.0, "impressions": 2800, "reach": 2406, "ad_views_3s": 525, "views": 525, "completion_views": 52, "completion_rate": 9.9, "cpv": 130.36}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "금쪽같은알바생 별이_트래픽", "adset_id": "120247698382770203", "adset_name": "260601_ep.5_트래픽", "date": "2026-06-01", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 67950.0, "impressions": 5218, "reach": 4687, "ad_views_3s": 988, "views": 988, "completion_views": 20, "completion_rate": 2.0, "cpv": 68.78}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "금쪽같은알바생 별이_인지도", "adset_id": "120247698816380203", "adset_name": "260601_ep5_인지도", "date": "2026-06-01", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224289.0, "impressions": 174047, "reach": 108236, "ad_views_3s": 11293, "views": 11293, "completion_views": 67, "completion_rate": 0.6, "cpv": 19.86}, {"platform": "meta", "campaign_id": "120250417757330203", "campaign_name": "260703_금쪽같은알바생 별이 ep7", "adset_id": "120250417757340203", "adset_name": "260703_금쪽같은알바생 별이 ep7", "date": "2026-07-03", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 31800, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 202518.0, "impressions": 217609, "reach": 153529, "ad_views_3s": 24949, "views": 24949, "completion_views": 158, "completion_rate": 0.6, "cpv": 8.12}, {"platform": "meta", "campaign_id": "120250803602480203", "campaign_name": "260716_2026년 상반기 신메뉴 출시", "adset_id": "120250803602500203", "adset_name": "260716_2026년 상반기 신메뉴 출시", "date": "2026-07-16", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 31800, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 200886.0, "impressions": 232697, "reach": 171624, "ad_views_3s": 19335, "views": 19335, "completion_views": 837, "completion_rate": 4.3, "cpv": 10.39}, {"platform": "meta", "campaign_id": "120251204442560203", "campaign_name": "260803_금쪽같은알바생 별이", "adset_id": "120251204442580203", "adset_name": "260803_금쪽같은알바생 별이", "date": "2026-08-03", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 32000, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203923.0, "impressions": 183480, "reach": 108380, "ad_views_3s": 4729, "views": 4729, "completion_views": 80, "completion_rate": 1.7, "cpv": 43.12}, {"platform": "meta", "campaign_id": "120251424785880203", "campaign_name": "2609_ep9", "adset_id": "120251424785890203", "adset_name": "2609_ep9", "date": null, "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 7000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 44168.0, "impressions": 13941, "reach": 13169, "ad_views_3s": 8491, "views": 8491, "completion_views": 373, "completion_rate": 4.4, "cpv": 5.2}, {"platform": "meta", "campaign_id": "120251729011550203", "campaign_name": "260824_달프토_참여", "adset_id": "120251729011560203", "adset_name": "260824_달프토_참여", "date": "2026-08-24", "status": "ACTIVE", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203890.0, "impressions": 76005, "reach": 65190, "ad_views_3s": 43430, "views": 43430, "completion_views": 3372, "completion_rate": 7.8, "cpv": 4.69}, {"platform": "meta", "campaign_id": "120251813215550203", "campaign_name": "260831_짭명란_참여", "adset_id": "120251813215570203", "adset_name": "260831_짭명란_참여", "date": "2026-08-31", "status": "ACTIVE", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 201382.0, "impressions": 58318, "reach": 48717, "ad_views_3s": 32810, "views": 32810, "completion_views": 6654, "completion_rate": 20.3, "cpv": 6.14}];
+  const UPDATED_AT = "2026-09-07 12:40 KST";
 
   const OBJ_LABEL = { OUTCOME_ENGAGEMENT: "참여", OUTCOME_AWARENESS: "인지도", OUTCOME_TRAFFIC: "트래픽" };
   const GOAL_LABEL = {
@@ -326,7 +374,7 @@
     return null;
   }
 
-  let ROWS = CAMPAIGNS.map(r => ({ ...r, date: parseDate(r.adset_name) || parseDate(r.campaign_name) }))
+  let ROWS = CAMPAIGNS.map(r => ({ ...r, date: r.date || parseDate(r.adset_name) || parseDate(r.campaign_name) }))
     .sort((a, b) => (a.date || "9999") < (b.date || "9999") ? -1 : 1);
 
   // rank-based efficiency tier: cheapest third = good, priciest third = bad, middle = neutral.
@@ -352,32 +400,73 @@
 
   // ---- tiles ----
   const totalSpend = ROWS.reduce((a,c)=>a+c.spend,0);
-  const totalViews = ROWS.reduce((a,c)=>a+c.ad_views_3s,0);
+  const totalViews = ROWS.reduce((a,c)=>a+c.views,0);
   const totalCompletion = ROWS.reduce((a,c)=>a+c.completion_views,0);
   const avgCPV = totalSpend / totalViews;
   const avgCompletionRate = totalCompletion / totalViews * 100;
 
   document.getElementById("tiles").innerHTML = [
     { label: "세팅(광고그룹) 수", value: `${ROWS.length}개` },
-    { label: "누적 광고비", value: fmtWonShort(totalSpend) },
-    { label: "누적 3초조회수", value: fmtInt(totalViews) },
+    { label: "누적 통합 광고비", value: fmtWonShort(totalSpend) },
+    { label: "누적 통합 조회수", value: fmtInt(totalViews) },
     { label: "누적 완료조회수", value: fmtInt(totalCompletion) },
     { label: "평균 완료율", value: fmtPct(avgCompletionRate) },
-    { label: "평균 광고 CPV", value: fmtCPV(avgCPV), accent: true },
+    { label: "평균 통합 CPV", value: fmtCPV(avgCPV), accent: true },
   ].map(t => `
     <div class="tile ${t.accent ? "accent" : ""}">
       <div class="tile-label">${t.label}</div>
       <div class="tile-value">${t.value}</div>
     </div>`).join("");
 
-  // ---- detail cards ----
+  // ---- grouping helpers: date is the shared start-day both Meta and TikTok
+  // launch on for a given period, so it's the join key across platforms. ----
+  function aggregateRows(rows) {
+    const spend = rows.reduce((a,r)=>a+r.spend, 0);
+    const views = rows.reduce((a,r)=>a+r.views, 0);
+    return { spend, views, cpv: views ? spend / views : null, count: rows.length };
+  }
+  function groupBy(rows, keyFn) {
+    const map = new Map();
+    rows.forEach(r => {
+      const k = keyFn(r);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k).push(r);
+    });
+    return map;
+  }
+  function platformCell(rows, platform, label) {
+    const sub = rows.filter(r => r.platform === platform);
+    if (!sub.length) return `<span class="platform-cell empty">${platform === "tiktok" ? "연동 전" : "—"}</span>`;
+    const agg = aggregateRows(sub);
+    return `<span class="platform-cell ${platform}"><span class="dot"></span>${fmtWonShort(agg.spend)} · ${fmtInt(agg.views)}회</span>`;
+  }
+
+  // ---- monthly summary ----
+  (function renderMonths() {
+    const byMonth = groupBy(ROWS, r => r.date ? r.date.slice(0,7) : "날짜 미상");
+    const months = [...byMonth.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
+    document.getElementById("monthRows").innerHTML = months.map(([month, rows]) => {
+      const agg = aggregateRows(rows);
+      const label = month === "날짜 미상" ? month : `${month.slice(0,4)}년 ${+month.slice(5,7)}월`;
+      return `
+        <tr>
+          <td>${label}</td>
+          <td>${rows.length}개</td>
+          <td>${fmtWon(agg.spend)}</td>
+          <td>${fmtInt(agg.views)}</td>
+          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
+        </tr>`;
+    }).join("");
+  })();
+
+  // ---- period table (expand to see individual settings) ----
   function summarize(r) {
     const goal = GOAL_LABEL[r.optimization_goal] || r.optimization_goal || "목표 미상";
     return `${budgetLabel(r)} 예산 · <b>${goal}</b> 최적화 · ${ageLabel(r)} · ${platformLabel(r)} 타겟팅으로 집행. `
       + `CPV <b>${fmtCPV(r.cpv)}</b>(${effLabel(r.tier)}), 완료율 <b>${fmtPct(r.completion_rate)}</b>.`;
   }
-
-  document.getElementById("detailList").innerHTML = ROWS.map(r => `
+  function cardHTML(r) {
+    return `
     <div class="detail-card ${r.status === "ACTIVE" ? "" : "inactive"}">
       <div class="detail-top">
         <div class="detail-title-block">
@@ -404,7 +493,41 @@
         <div class="metric"><div class="metric-label">완료율</div><div class="metric-value">${fmtPct(r.completion_rate)}</div></div>
       </div>
       <div class="detail-summary">${summarize(r)}</div>
-    </div>`).join("");
+    </div>`;
+  }
+
+  (function renderPeriods() {
+    const byPeriod = groupBy(ROWS, r => r.date || `설정:${r.adset_id || r.campaign_id}`);
+    const periods = [...byPeriod.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
+    const tbody = document.getElementById("periodRows");
+
+    tbody.innerHTML = periods.map(([key, rows], i) => {
+      const agg = aggregateRows(rows);
+      const label = rows[0].date ? rows[0].date : `날짜 미상 · ${rows[0].adset_name || rows[0].campaign_name}`;
+      return `
+        <tr class="period-row" data-target="period-detail-${i}">
+          <td><span class="caret">▸</span></td>
+          <td>${label}</td>
+          <td>${rows.length}개</td>
+          <td>${fmtWon(agg.spend)}</td>
+          <td>${fmtInt(agg.views)}</td>
+          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
+          <td>${platformCell(rows, "meta")}</td>
+          <td>${platformCell(rows, "tiktok")}</td>
+        </tr>
+        <tr class="period-detail-row" id="period-detail-${i}" hidden>
+          <td colspan="8"><div class="detail-list">${rows.map(cardHTML).join("")}</div></td>
+        </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll(".period-row").forEach(row => {
+      row.addEventListener("click", () => {
+        const detail = document.getElementById(row.dataset.target);
+        detail.hidden = !detail.hidden;
+        row.classList.toggle("open", !detail.hidden);
+      });
+    });
+  })();
 
   // ---- chart: CPV bar per setting, sorted by date ----
   (function renderChart() {
@@ -479,10 +602,10 @@
       const g = r.optimization_goal || "UNKNOWN";
       byGoal[g] = byGoal[g] || { spend: 0, views: 0, budgets: [] };
       byGoal[g].spend += r.spend;
-      byGoal[g].views += r.ad_views_3s;
+      byGoal[g].views += r.views;
       if (r.budget) byGoal[g].budgets.push(r.budget);
     });
-    const totalViews = ROWS.reduce((a,r)=>a+r.ad_views_3s, 0);
+    const totalViews = ROWS.reduce((a,r)=>a+r.views, 0);
     const candidates = Object.entries(byGoal)
       .map(([goal, g]) => ({
         goal, cpv: g.spend / g.views, views: g.views,
