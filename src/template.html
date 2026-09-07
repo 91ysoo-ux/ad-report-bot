@@ -183,6 +183,32 @@
   .chart-legend .sw.bad { background: var(--status-bad); }
   .chart-legend .sw.mid { background: var(--surface-3); border: 1px solid var(--border-2); }
 
+  /* ---- monthly / period summary tables ---- */
+  .table-scroll { overflow-x: auto; margin-top: 14px; }
+  table.summary-table, table.period-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .summary-table th, .period-table th {
+    text-align: right; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--muted); padding: 0 10px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .summary-table th:first-child, .period-table th:nth-child(2) { text-align: left; }
+  .summary-table td, .period-table td {
+    padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px;
+    text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .summary-table td:first-child, .period-table td:nth-child(2) { text-align: left; }
+  .summary-table tr:last-child td, .period-table tr.period-row:last-child td { border-bottom: none; }
+  .platform-cell { display: inline-flex; align-items: center; gap: 5px; }
+  .platform-cell .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .platform-cell.meta .dot { background: var(--meta); }
+  .platform-cell.tiktok .dot { background: var(--amber); }
+  .platform-cell.empty { color: var(--muted); }
+  .period-row { cursor: pointer; }
+  .period-row:hover { background: var(--surface-2); }
+  .period-row .caret { color: var(--muted); font-size: 11px; transition: transform 0.15s ease; display: inline-block; }
+  .period-row.open .caret { transform: rotate(90deg); }
+  .period-detail-row td { padding: 14px 10px 18px; border-bottom: 1px solid var(--border); }
+  .period-cpv { font-weight: 700; }
+
   /* ---- per-setting detail cards ---- */
   .detail-list { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
   .detail-card {
@@ -261,6 +287,21 @@
 
   <div class="card">
     <div class="section-head">
+      <div class="section-title">월별 통합 성과 (Meta + TikTok)</div>
+      <div class="section-sub">한 달에 얼마 쓰고 얼마 조회됐는지 · 틱톡 연동 전이라 지금은 Meta만 집계됨</div>
+    </div>
+    <div class="table-scroll">
+      <table class="summary-table">
+        <thead>
+          <tr><th>월</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th></tr>
+        </thead>
+        <tbody id="monthRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
       <div class="section-title">세팅별 광고 효율 비교 (광고비 ÷ 3초조회수)</div>
       <div class="section-sub">막대가 낮을수록 조회 1회당 비용이 저렴함 · 이름의 앞자리는 집행 시작일</div>
     </div>
@@ -279,10 +320,17 @@
 
   <div>
     <div class="section-head">
-      <div class="section-title">세팅별 상세 — 예산·타겟·목표와 결과</div>
-      <div class="section-sub">하나의 카드 = 하나의 광고그룹(세팅) · 날짜순 정렬 · 흐린 카드는 현재 중지 상태</div>
+      <div class="section-title">캠페인 기간별 통합 성과 — 클릭해서 세팅 상세 보기</div>
+      <div class="section-sub">기간 = 같은 날 시작한 세팅 묶음(Meta+TikTok 동시 집행 기준) · 행을 누르면 개별 세팅이 펼쳐짐</div>
     </div>
-    <div class="detail-list" id="detailList"></div>
+    <div class="table-scroll">
+      <table class="period-table">
+        <thead>
+          <tr><th></th><th>기간</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th><th>Meta</th><th>TikTok</th></tr>
+        </thead>
+        <tbody id="periodRows"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="guide">
@@ -326,7 +374,7 @@
     return null;
   }
 
-  let ROWS = CAMPAIGNS.map(r => ({ ...r, date: parseDate(r.adset_name) || parseDate(r.campaign_name) }))
+  let ROWS = CAMPAIGNS.map(r => ({ ...r, date: r.date || parseDate(r.adset_name) || parseDate(r.campaign_name) }))
     .sort((a, b) => (a.date || "9999") < (b.date || "9999") ? -1 : 1);
 
   // rank-based efficiency tier: cheapest third = good, priciest third = bad, middle = neutral.
@@ -352,32 +400,73 @@
 
   // ---- tiles ----
   const totalSpend = ROWS.reduce((a,c)=>a+c.spend,0);
-  const totalViews = ROWS.reduce((a,c)=>a+c.ad_views_3s,0);
+  const totalViews = ROWS.reduce((a,c)=>a+c.views,0);
   const totalCompletion = ROWS.reduce((a,c)=>a+c.completion_views,0);
   const avgCPV = totalSpend / totalViews;
   const avgCompletionRate = totalCompletion / totalViews * 100;
 
   document.getElementById("tiles").innerHTML = [
     { label: "세팅(광고그룹) 수", value: `${ROWS.length}개` },
-    { label: "누적 광고비", value: fmtWonShort(totalSpend) },
-    { label: "누적 3초조회수", value: fmtInt(totalViews) },
+    { label: "누적 통합 광고비", value: fmtWonShort(totalSpend) },
+    { label: "누적 통합 조회수", value: fmtInt(totalViews) },
     { label: "누적 완료조회수", value: fmtInt(totalCompletion) },
     { label: "평균 완료율", value: fmtPct(avgCompletionRate) },
-    { label: "평균 광고 CPV", value: fmtCPV(avgCPV), accent: true },
+    { label: "평균 통합 CPV", value: fmtCPV(avgCPV), accent: true },
   ].map(t => `
     <div class="tile ${t.accent ? "accent" : ""}">
       <div class="tile-label">${t.label}</div>
       <div class="tile-value">${t.value}</div>
     </div>`).join("");
 
-  // ---- detail cards ----
+  // ---- grouping helpers: date is the shared start-day both Meta and TikTok
+  // launch on for a given period, so it's the join key across platforms. ----
+  function aggregateRows(rows) {
+    const spend = rows.reduce((a,r)=>a+r.spend, 0);
+    const views = rows.reduce((a,r)=>a+r.views, 0);
+    return { spend, views, cpv: views ? spend / views : null, count: rows.length };
+  }
+  function groupBy(rows, keyFn) {
+    const map = new Map();
+    rows.forEach(r => {
+      const k = keyFn(r);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k).push(r);
+    });
+    return map;
+  }
+  function platformCell(rows, platform, label) {
+    const sub = rows.filter(r => r.platform === platform);
+    if (!sub.length) return `<span class="platform-cell empty">${platform === "tiktok" ? "연동 전" : "—"}</span>`;
+    const agg = aggregateRows(sub);
+    return `<span class="platform-cell ${platform}"><span class="dot"></span>${fmtWonShort(agg.spend)} · ${fmtInt(agg.views)}회</span>`;
+  }
+
+  // ---- monthly summary ----
+  (function renderMonths() {
+    const byMonth = groupBy(ROWS, r => r.date ? r.date.slice(0,7) : "날짜 미상");
+    const months = [...byMonth.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
+    document.getElementById("monthRows").innerHTML = months.map(([month, rows]) => {
+      const agg = aggregateRows(rows);
+      const label = month === "날짜 미상" ? month : `${month.slice(0,4)}년 ${+month.slice(5,7)}월`;
+      return `
+        <tr>
+          <td>${label}</td>
+          <td>${rows.length}개</td>
+          <td>${fmtWon(agg.spend)}</td>
+          <td>${fmtInt(agg.views)}</td>
+          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
+        </tr>`;
+    }).join("");
+  })();
+
+  // ---- period table (expand to see individual settings) ----
   function summarize(r) {
     const goal = GOAL_LABEL[r.optimization_goal] || r.optimization_goal || "목표 미상";
     return `${budgetLabel(r)} 예산 · <b>${goal}</b> 최적화 · ${ageLabel(r)} · ${platformLabel(r)} 타겟팅으로 집행. `
       + `CPV <b>${fmtCPV(r.cpv)}</b>(${effLabel(r.tier)}), 완료율 <b>${fmtPct(r.completion_rate)}</b>.`;
   }
-
-  document.getElementById("detailList").innerHTML = ROWS.map(r => `
+  function cardHTML(r) {
+    return `
     <div class="detail-card ${r.status === "ACTIVE" ? "" : "inactive"}">
       <div class="detail-top">
         <div class="detail-title-block">
@@ -404,7 +493,41 @@
         <div class="metric"><div class="metric-label">완료율</div><div class="metric-value">${fmtPct(r.completion_rate)}</div></div>
       </div>
       <div class="detail-summary">${summarize(r)}</div>
-    </div>`).join("");
+    </div>`;
+  }
+
+  (function renderPeriods() {
+    const byPeriod = groupBy(ROWS, r => r.date || `설정:${r.adset_id || r.campaign_id}`);
+    const periods = [...byPeriod.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
+    const tbody = document.getElementById("periodRows");
+
+    tbody.innerHTML = periods.map(([key, rows], i) => {
+      const agg = aggregateRows(rows);
+      const label = rows[0].date ? rows[0].date : `날짜 미상 · ${rows[0].adset_name || rows[0].campaign_name}`;
+      return `
+        <tr class="period-row" data-target="period-detail-${i}">
+          <td><span class="caret">▸</span></td>
+          <td>${label}</td>
+          <td>${rows.length}개</td>
+          <td>${fmtWon(agg.spend)}</td>
+          <td>${fmtInt(agg.views)}</td>
+          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
+          <td>${platformCell(rows, "meta")}</td>
+          <td>${platformCell(rows, "tiktok")}</td>
+        </tr>
+        <tr class="period-detail-row" id="period-detail-${i}" hidden>
+          <td colspan="8"><div class="detail-list">${rows.map(cardHTML).join("")}</div></td>
+        </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll(".period-row").forEach(row => {
+      row.addEventListener("click", () => {
+        const detail = document.getElementById(row.dataset.target);
+        detail.hidden = !detail.hidden;
+        row.classList.toggle("open", !detail.hidden);
+      });
+    });
+  })();
 
   // ---- chart: CPV bar per setting, sorted by date ----
   (function renderChart() {
@@ -479,10 +602,10 @@
       const g = r.optimization_goal || "UNKNOWN";
       byGoal[g] = byGoal[g] || { spend: 0, views: 0, budgets: [] };
       byGoal[g].spend += r.spend;
-      byGoal[g].views += r.ad_views_3s;
+      byGoal[g].views += r.views;
       if (r.budget) byGoal[g].budgets.push(r.budget);
     });
-    const totalViews = ROWS.reduce((a,r)=>a+r.ad_views_3s, 0);
+    const totalViews = ROWS.reduce((a,r)=>a+r.views, 0);
     const candidates = Object.entries(byGoal)
       .map(([goal, g]) => ({
         goal, cpv: g.spend / g.views, views: g.views,

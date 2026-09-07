@@ -5,6 +5,7 @@ Run manually for local testing (reads .env), or via GitHub Actions
 """
 import json
 import os
+import re
 from datetime import datetime, timezone, timedelta
 
 import requests
@@ -12,6 +13,27 @@ import requests
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API_VER = "v21.0"
 KST = timezone(timedelta(hours=9))
+
+_DATE8 = re.compile(r"^(\d{8})")
+_DATE6 = re.compile(r"^(\d{6})")
+
+
+def _parse_date(name):
+    """Campaigns/ad sets are named with a YYMMDD or YYYYMMDD prefix marking the
+    shared start date both Meta and TikTok launch on for that period — this is
+    the join key used to combine the two platforms' numbers for the same period.
+    """
+    if not name:
+        return None
+    m = _DATE8.match(name)
+    if m:
+        s = m.group(1)
+        return f"{s[:4]}-{s[4:6]}-{s[6:8]}"
+    m = _DATE6.match(name)
+    if m:
+        s = m.group(1)
+        return f"20{s[:2]}-{s[2:4]}-{s[4:6]}"
+    return None
 
 
 def load_local_env(path):
@@ -119,12 +141,15 @@ def build_rows():
         budget, budget_period = _budget_from(adset, campaign)
         targeting = adset.get("targeting") or {}
 
+        date = _parse_date(row.get("adset_name")) or _parse_date(row.get("campaign_name"))
+
         rows.append({
             "platform": "meta",
             "campaign_id": row.get("campaign_id"),
             "campaign_name": row.get("campaign_name"),
             "adset_id": adset_id,
             "adset_name": row.get("adset_name"),
+            "date": date,
             "status": adset.get("status") or campaign.get("effective_status"),
             "objective": campaign.get("objective"),
             "optimization_goal": adset.get("optimization_goal"),
@@ -137,7 +162,12 @@ def build_rows():
             "spend": spend,
             "impressions": int(row.get("impressions", 0) or 0),
             "reach": int(row.get("reach", 0) or 0),
+            # "views" is the cross-platform combined-view field: every platform's
+            # fetch function must set it to whatever its own native "ad view"
+            # metric is (Meta: 3-second video view; TikTok: its own equivalent).
+            # ad_views_3s stays as the Meta-specific label shown on its own cards.
             "ad_views_3s": int(ad_views_3s),
+            "views": int(ad_views_3s),
             "completion_views": int(completion),
             "completion_rate": round(completion / ad_views_3s * 100, 1) if ad_views_3s else 0.0,
             "cpv": round(spend / ad_views_3s, 2) if ad_views_3s else None,
