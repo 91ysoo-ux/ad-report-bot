@@ -32,12 +32,6 @@ load_local_env(os.path.join(ROOT, ".env"))
 META_TOKEN = os.environ["META_ACCESS_TOKEN"]
 META_ACCOUNT = os.environ["META_AD_ACCOUNT_ID"]
 
-OBJ_LABEL = {
-    "OUTCOME_ENGAGEMENT": "참여",
-    "OUTCOME_AWARENESS": "인지도",
-    "OUTCOME_TRAFFIC": "트래픽",
-}
-
 
 def meta_get(path, params):
     p = dict(params)
@@ -58,47 +52,88 @@ def action_value(row, field, action_type="video_view"):
 
 
 def fetch_meta_campaigns():
-    meta = {}
+    """campaign_id -> {status, objective, daily_budget, lifetime_budget} (for CBO fallback)."""
     data = meta_get(f"{META_ACCOUNT}/campaigns", {
-        "fields": "id,name,status,effective_status,objective",
+        "fields": "id,name,status,effective_status,objective,daily_budget,lifetime_budget",
         "limit": 200,
     })
-    for row in data.get("data", []):
-        meta[row["id"]] = {
-            "status": row.get("effective_status"),
-            "objective": row.get("objective"),
-        }
-    return meta
+    return {row["id"]: row for row in data.get("data", [])}
 
 
-def fetch_meta_insights():
+def fetch_meta_adsets():
+    """adset_id -> full adset settings (budget, targeting, optimization, bid)."""
+    data = meta_get(f"{META_ACCOUNT}/adsets", {
+        "fields": (
+            "id,campaign_id,name,daily_budget,lifetime_budget,bid_strategy,"
+            "billing_event,optimization_goal,status,targeting"
+        ),
+        "limit": 200,
+    })
+    return {row["id"]: row for row in data.get("data", [])}
+
+
+def fetch_meta_adset_insights():
     data = meta_get(f"{META_ACCOUNT}/insights", {
-        "level": "campaign",
+        "level": "adset",
         "date_preset": "maximum",
         "fields": (
-            "campaign_id,campaign_name,spend,impressions,reach,actions,"
-            "video_p100_watched_actions"
+            "campaign_id,campaign_name,adset_id,adset_name,spend,impressions,reach,"
+            "actions,video_p100_watched_actions"
         ),
         "limit": 200,
     })
     return data.get("data", [])
 
 
-def build_campaigns():
-    meta_info = fetch_meta_campaigns()
-    insights = fetch_meta_insights()
+def _budget_from(adset, campaign):
+    """Ad-set budget (ABO) takes priority; falls back to the campaign's budget (CBO)."""
+    daily = int(adset.get("daily_budget") or 0)
+    if daily:
+        return daily, "일"
+    lifetime = int(adset.get("lifetime_budget") or 0)
+    if lifetime:
+        return lifetime, "총"
+    c_daily = int(campaign.get("daily_budget") or 0)
+    if c_daily:
+        return c_daily, "일(캠페인 예산)"
+    c_lifetime = int(campaign.get("lifetime_budget") or 0)
+    if c_lifetime:
+        return c_lifetime, "총(캠페인 예산)"
+    return None, None
+
+
+def build_rows():
+    campaigns = fetch_meta_campaigns()
+    adsets = fetch_meta_adsets()
+    insights = fetch_meta_adset_insights()
+
     rows = []
     for row in insights:
+        adset_id = row.get("adset_id")
+        adset = adsets.get(adset_id, {})
+        campaign = campaigns.get(row.get("campaign_id"), {})
+
         spend = float(row.get("spend", 0) or 0)
         ad_views_3s = action_value(row, "actions", "video_view")
         completion = action_value(row, "video_p100_watched_actions", "video_view")
-        info = meta_info.get(row.get("campaign_id"), {})
+        budget, budget_period = _budget_from(adset, campaign)
+        targeting = adset.get("targeting") or {}
+
         rows.append({
             "platform": "meta",
             "campaign_id": row.get("campaign_id"),
             "campaign_name": row.get("campaign_name"),
-            "status": info.get("status"),
-            "objective": info.get("objective"),
+            "adset_id": adset_id,
+            "adset_name": row.get("adset_name"),
+            "status": adset.get("status") or campaign.get("effective_status"),
+            "objective": campaign.get("objective"),
+            "optimization_goal": adset.get("optimization_goal"),
+            "bid_strategy": adset.get("bid_strategy"),
+            "budget": budget,
+            "budget_period": budget_period,
+            "age_min": targeting.get("age_min"),
+            "age_max": targeting.get("age_max"),
+            "platforms": targeting.get("publisher_platforms") or [],
             "spend": spend,
             "impressions": int(row.get("impressions", 0) or 0),
             "reach": int(row.get("reach", 0) or 0),
@@ -110,24 +145,24 @@ def build_campaigns():
     return rows
 
 
-def render(campaigns):
+def render(rows):
     template_path = os.path.join(ROOT, "src", "template.html")
     with open(template_path, encoding="utf-8") as f:
         html = f.read()
 
-    campaigns_json = json.dumps(campaigns, ensure_ascii=False)
+    rows_json = json.dumps(rows, ensure_ascii=False)
     updated_at = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
 
-    html = html.replace("/*__CAMPAIGNS_JSON__*/[]/*__END__*/", campaigns_json)
+    html = html.replace("/*__CAMPAIGNS_JSON__*/[]/*__END__*/", rows_json)
     html = html.replace("__UPDATED_AT__", updated_at)
 
     out_path = os.path.join(ROOT, "docs", "index.html")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"wrote {out_path} ({len(campaigns)} campaigns, updated_at={updated_at})")
+    print(f"wrote {out_path} ({len(rows)} ad sets, updated_at={updated_at})")
 
 
 if __name__ == "__main__":
-    campaigns = build_campaigns()
-    render(campaigns)
+    rows = build_rows()
+    render(rows)
