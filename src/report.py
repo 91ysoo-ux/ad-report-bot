@@ -63,6 +63,23 @@ def meta_get(path, params):
     return r.json()
 
 
+def meta_get_all(path, params):
+    """Follow all cursor pages; never publish a silently truncated report."""
+    query = dict(params)
+    rows, seen = [], set()
+    while True:
+        page = meta_get(path, query)
+        rows.extend(page.get("data", []))
+        paging = page.get("paging") or {}
+        if not paging.get("next"):
+            return rows
+        cursor = (paging.get("cursors") or {}).get("after")
+        if not cursor or cursor in seen:
+            raise ValueError("Meta pagination cursor missing or repeated; report was not updated")
+        seen.add(cursor)
+        query["after"] = cursor
+
+
 def action_value(row, field, action_type="video_view"):
     for item in row.get(field, []) or []:
         if item.get("action_type") == action_type:
@@ -75,27 +92,27 @@ def action_value(row, field, action_type="video_view"):
 
 def fetch_meta_campaigns():
     """campaign_id -> {status, objective, daily_budget, lifetime_budget} (for CBO fallback)."""
-    data = meta_get(f"{META_ACCOUNT}/campaigns", {
+    data = meta_get_all(f"{META_ACCOUNT}/campaigns", {
         "fields": "id,name,status,effective_status,objective,daily_budget,lifetime_budget",
         "limit": 200,
     })
-    return {row["id"]: row for row in data.get("data", [])}
+    return {row["id"]: row for row in data}
 
 
 def fetch_meta_adsets():
     """adset_id -> full adset settings (budget, targeting, optimization, bid)."""
-    data = meta_get(f"{META_ACCOUNT}/adsets", {
+    data = meta_get_all(f"{META_ACCOUNT}/adsets", {
         "fields": (
             "id,campaign_id,name,daily_budget,lifetime_budget,bid_strategy,"
             "billing_event,optimization_goal,status,targeting"
         ),
         "limit": 200,
     })
-    return {row["id"]: row for row in data.get("data", [])}
+    return {row["id"]: row for row in data}
 
 
 def fetch_meta_adset_insights():
-    data = meta_get(f"{META_ACCOUNT}/insights", {
+    data = meta_get_all(f"{META_ACCOUNT}/insights", {
         "level": "adset",
         "date_preset": "maximum",
         "fields": (
@@ -104,7 +121,7 @@ def fetch_meta_adset_insights():
         ),
         "limit": 200,
     })
-    return data.get("data", [])
+    return data
 
 
 def _budget_from(adset, campaign):
@@ -180,7 +197,7 @@ def render(rows):
     with open(template_path, encoding="utf-8") as f:
         html = f.read()
 
-    rows_json = json.dumps(rows, ensure_ascii=False)
+    rows_json = json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")
     updated_at = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
 
     html = html.replace("/*__CAMPAIGNS_JSON__*/[]/*__END__*/", rows_json)
