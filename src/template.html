@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -275,8 +275,8 @@
     <div class="head-left">
       <div class="eyebrow">
         금별맥주AD · INSTAR_게시물광고
-        <span class="badge">Meta 실데이터 · 자동 갱신</span>
-        <span class="badge pending">TikTok·자연조회수 연동 예정</span>
+        <span class="badge">Meta+TikTok 실데이터 · 자동 갱신</span>
+        <span class="badge pending">자연조회수 연동 예정</span>
       </div>
       <h1>브랜딩 영상 조회 성과 트래커</h1>
     </div>
@@ -288,7 +288,7 @@
   <div class="card">
     <div class="section-head">
       <div class="section-title">월별 통합 성과 (Meta + TikTok)</div>
-      <div class="section-sub">한 달에 얼마 쓰고 얼마 조회됐는지 · 틱톡 연동 전이라 지금은 Meta만 집계됨</div>
+      <div class="section-sub">한 달에 얼마 쓰고 얼마 조회됐는지 · Meta+TikTok 합산</div>
     </div>
     <div class="table-scroll">
       <table class="summary-table">
@@ -341,7 +341,7 @@
     </div>
   </div>
 
-  <footer>Meta Marketing API 실데이터 · instar_게시물광고 계정 · GitHub Actions로 자동 갱신 · TikTok 연동과 자연조회수 수동입력은 다음 업데이트에서 추가 예정</footer>
+  <footer>Meta + TikTok Marketing API 실데이터 · GitHub Actions로 자동 갱신 · 자연조회수 수동입력은 다음 업데이트에서 추가 예정</footer>
 </div>
 
 <script>
@@ -362,8 +362,11 @@
     LOWEST_COST_WITHOUT_CAP: "최저비용(한도없음)",
     LOWEST_COST_WITH_BID_CAP: "최저비용(입찰상한)",
     COST_CAP: "비용상한",
+    CPMV: "노출당 입찰(CPMV)",
+    CPM: "노출당 입찰(CPM)",
+    CPC: "클릭당 입찰(CPC)",
   };
-  const PLATFORM_LABEL = { instagram: "인스타그램", facebook: "페이스북", audience_network: "오디언스 네트워크", messenger: "메신저" };
+  const PLATFORM_LABEL = { instagram: "인스타그램", facebook: "페이스북", audience_network: "오디언스 네트워크", messenger: "메신저", tiktok: "틱톡" };
 
   function parseDate(name) {
     if (!name) return null;
@@ -379,22 +382,24 @@
 
   // rank-based efficiency tier: cheapest third = good, priciest third = bad, middle = neutral.
   (function assignTiers() {
-    const byCpv = [...ROWS].sort((a, b) => a.cpv - b.cpv);
+    ROWS.forEach(r => { r.tier = "mid"; });
+    const byCpv = ROWS.filter(r => r.cpv !== null && r.cpv !== undefined).sort((a, b) => a.cpv - b.cpv);
     const n = byCpv.length;
     const goodCut = Math.max(1, Math.floor(n / 3));
     const badCut = Math.max(goodCut, n - Math.floor(n / 3));
     byCpv.forEach((r, i) => { r.tier = i < goodCut ? "good" : i >= badCut ? "bad" : "mid"; });
+    // n above is now the ranked (non-null) count, recomputed from byCpv.length already
   })();
 
   const fmtInt = n => Math.round(n).toLocaleString("ko-KR");
   const fmtWon = n => "₩" + Math.round(n).toLocaleString("ko-KR");
   const fmtWonShort = n => n >= 10000 ? "₩" + (n/10000).toFixed(0) + "만" : fmtWon(n);
-  const fmtCPV = n => (!isFinite(n) || isNaN(n)) ? "—" : "₩" + n.toFixed(1) + "/회";
+  const fmtCPV = n => (n === null || n === undefined || !isFinite(n) || isNaN(n)) ? "—" : "₩" + n.toFixed(1) + "/회";
   const fmtPct = n => n.toFixed(1) + "%";
   const effLabel = tier => tier === "good" ? "효율 좋음" : tier === "bad" ? "효율 나쁨" : "효율 보통";
   const ageLabel = r => (r.age_min && r.age_max) ? `${r.age_min}~${r.age_max}세` : "전연령";
   const platformLabel = r => (r.platforms && r.platforms.length) ? r.platforms.map(p => PLATFORM_LABEL[p] || p).join("+") : "-";
-  const budgetLabel = r => r.budget ? `${fmtWon(r.budget)}/${r.budget_period}` : "예산 정보 없음";
+  const budgetLabel = r => r.budget ? `${fmtWon(r.budget)}/${r.budget_period}` : "정보 없음";
 
   document.getElementById("updatedAt").textContent = `데이터 기준 ${UPDATED_AT}`;
 
@@ -488,7 +493,7 @@
       <div class="metric-row">
         <div class="metric"><div class="metric-label">광고비</div><div class="metric-value">${fmtWon(r.spend)}</div></div>
         <div class="metric"><div class="metric-label">노출수</div><div class="metric-value">${fmtInt(r.impressions)}</div></div>
-        <div class="metric"><div class="metric-label">3초조회</div><div class="metric-value">${fmtInt(r.ad_views_3s)}</div></div>
+        <div class="metric"><div class="metric-label">${r.ad_view_label || "조회"}</div><div class="metric-value">${fmtInt(r.ad_view_count)}</div></div>
         <div class="metric"><div class="metric-label">완료조회</div><div class="metric-value">${fmtInt(r.completion_views)}</div></div>
         <div class="metric"><div class="metric-label">완료율</div><div class="metric-value">${fmtPct(r.completion_rate)}</div></div>
       </div>
@@ -540,10 +545,12 @@
 
     const data = ROWS;
     const n = data.length;
-    const maxCPV = Math.max(...data.map(d => d.cpv));
+    const validCpv = data.filter(d => d.cpv !== null && d.cpv !== undefined);
+    const maxCPV = validCpv.length ? Math.max(...validCpv.map(d => d.cpv)) : 0;
     const niceMax = Math.ceil((maxCPV * 1.15) / 10) * 10 || 10;
-    const bestIdx = data.reduce((b,d,i,a)=> d.cpv < a[b].cpv ? i : b, 0);
-    const worstIdx = data.reduce((w,d,i,a)=> d.cpv > a[w].cpv ? i : w, 0);
+    const validIdxs = data.map((d,i)=>i).filter(i => data[i].cpv !== null && data[i].cpv !== undefined);
+    const bestIdx = validIdxs.length ? validIdxs.reduce((b,i)=> data[i].cpv < data[b].cpv ? i : b, validIdxs[0]) : -1;
+    const worstIdx = validIdxs.length ? validIdxs.reduce((w,i)=> data[i].cpv > data[w].cpv ? i : w, validIdxs[0]) : -1;
 
     const x0 = i => padL + (plotW / n) * i;
     const bw = (plotW / n) * 0.6;
@@ -587,7 +594,7 @@
           <div class="tooltip-date">${d.adset_name || d.campaign_name}</div>
           <div class="tooltip-row"><span class="k">예산</span><span class="v">${budgetLabel(d)}</span></div>
           <div class="tooltip-row"><span class="k">광고비</span><span class="v">${fmtWon(d.spend)}</span></div>
-          <div class="tooltip-row"><span class="k">3초조회</span><span class="v">${fmtInt(d.ad_views_3s)}</span></div>
+          <div class="tooltip-row"><span class="k">${d.ad_view_label || "조회"}</span><span class="v">${fmtInt(d.ad_view_count)}</span></div>
           <div class="tooltip-row"><span class="k">완료조회</span><span class="v">${fmtInt(d.completion_views)} (${fmtPct(d.completion_rate)})</span></div>
           <div class="tooltip-row"><span class="k">CPV</span><span class="v">${fmtCPV(d.cpv)}</span></div>`;
       });
@@ -627,7 +634,7 @@
     const budgetHigh = Math.ceil(best.avgBudget * 1.1 / 1000) * 1000;
 
     let html = `<p>지금까지 데이터 기준, <b>${GOAL_LABEL[best.goal] || best.goal}</b> 목표로 최적화했을 때 평균 CPV
-      <b>${fmtCPV(best.cpv)}</b>로 가장 효율적이었음(전체 3초조회의 ${(best.share*100).toFixed(0)}% 차지).
+      <b>${fmtCPV(best.cpv)}</b>로 가장 효율적이었음(전체 조회수의 ${(best.share*100).toFixed(0)}% 차지).
       다음 세팅은 <b>일 예산 ${fmtWon(budgetLow)}~${fmtWon(budgetHigh)}</b>, <b>${ageLabel(bestRow)}</b>,
       <b>${platformLabel(bestRow)}</b> 타겟으로 이 목표를 재사용하는 걸 추천.</p>`;
 

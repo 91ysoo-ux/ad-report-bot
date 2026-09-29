@@ -1,4 +1,4 @@
-name: 광고 리포트 갱신
+﻿name: 광고 리포트 갱신
 
 on:
   # 목/월 오전 09:00 KST = 00:00 UTC. GitHub 기본 cron은 활동이 뜸한 저장소에서
@@ -35,6 +35,8 @@ jobs:
         env:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
           META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          TIKTOK_ADVERTISER_ID: ${{ secrets.TIKTOK_ADVERTISER_ID }}
           PYTHONIOENCODING: utf-8
           TZ: Asia/Seoul
         run: python src/report.py
