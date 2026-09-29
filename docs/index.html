@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -7,274 +7,166 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-
 <style>
   :root {
     color-scheme: light;
-    --page:        #f9f9f7;
-    --surface:     #fcfcfb;
-    --surface-2:   #f3f2ee;
-    --surface-3:   #ebeae4;
-    --ink:         #0b0b0b;
-    --ink-2:       #52514e;
-    --muted:       #898781;
-    --grid:        #e1e0d9;
-    --baseline:    #c3c2b7;
-    --border:      rgba(11,11,11,0.10);
-    --border-2:    rgba(11,11,11,0.18);
-    --good:        #006300;
-    --bad:         #d03b3b;
-    --meta:        #2a78d6;
-    --meta-soft:   #2a78d61a;
-    --amber:       #eda100;
-    --shadow:      0 1px 2px rgba(11,11,11,0.04), 0 8px 24px -12px rgba(11,11,11,0.12);
-    --status-good:      #0ca30c;
-    --status-good-soft: #0ca30c1f;
-    --status-bad:       #d03b3b;
-    --status-bad-soft:  #d03b3b1f;
+    --page: #f9f9f7; --surface: #fcfcfb; --surface-2: #f3f2ee; --surface-3: #ebeae4;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10); --border-2: rgba(11,11,11,0.18);
+    --accent: #2a78d6; --accent-soft: #2a78d61a;
+    --meta: #2a78d6; --tiktok: #eb6834;
+    --status-good: #0ca30c; --status-good-soft: #0ca30c1f;
+    --status-bad: #d03b3b; --status-bad-soft: #d03b3b1f;
+    --amber: #eda100;
+    --shadow: 0 1px 2px rgba(11,11,11,0.04), 0 8px 24px -12px rgba(11,11,11,0.12);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --page:        #0d0d0d;
-      --surface:     #1a1a19;
-      --surface-2:   #212120;
-      --surface-3:   #292927;
-      --ink:         #ffffff;
-      --ink-2:       #c3c2b7;
-      --muted:       #898781;
-      --grid:        #2c2c2a;
-      --baseline:    #383835;
-      --border:      rgba(255,255,255,0.10);
-      --border-2:    rgba(255,255,255,0.18);
-      --good:        #0ca30c;
-      --bad:         #e66767;
-      --meta:        #3987e5;
-      --meta-soft:   #3987e526;
-      --amber:       #c98500;
-      --shadow:      0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+      --page: #0d0d0d; --surface: #1a1a19; --surface-2: #212120; --surface-3: #292927;
+      --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --baseline: #383835;
+      --border: rgba(255,255,255,0.10); --border-2: rgba(255,255,255,0.18);
+      --accent: #3987e5; --accent-soft: #3987e526;
+      --meta: #3987e5; --tiktok: #d95926; --amber: #c98500;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --page:        #0d0d0d;
-    --surface:     #1a1a19;
-    --surface-2:   #212120;
-    --surface-3:   #292927;
-    --ink:         #ffffff;
-    --ink-2:       #c3c2b7;
-    --muted:       #898781;
-    --grid:        #2c2c2a;
-    --baseline:    #383835;
-    --border:      rgba(255,255,255,0.10);
-    --border-2:    rgba(255,255,255,0.18);
-    --good:        #0ca30c;
-    --bad:         #e66767;
-    --meta:        #3987e5;
-    --meta-soft:   #3987e526;
-    --amber:       #c98500;
-    --shadow:      0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #212120; --surface-3: #292927;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --baseline: #383835;
+    --border: rgba(255,255,255,0.10); --border-2: rgba(255,255,255,0.18);
+    --accent: #3987e5; --accent-soft: #3987e526;
+    --meta: #3987e5; --tiktok: #d95926; --amber: #c98500;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
   }
-
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--page);
-    color: var(--ink);
-    font-family: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
-  }
-  :focus-visible { outline: 2px solid var(--meta); outline-offset: 2px; }
+  body { margin: 0; background: var(--page); color: var(--ink);
+    font-family: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 36px 24px 80px; display: flex; flex-direction: column; gap: 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  .head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  .head-left { display: flex; flex-direction: column; gap: 8px; }
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .eyebrow .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px 3px 7px;
-    border-radius: 100px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--ink-2);
-    letter-spacing: 0.02em;
-    text-transform: none;
-    font-weight: 600;
-    font-size: 11.5px;
-  }
-  .eyebrow .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--good); flex: none; }
-  .eyebrow .badge.pending::before { background: var(--amber); }
-  h1 { margin: 0; font-size: 27px; font-weight: 900; letter-spacing: -0.01em; text-wrap: balance; }
-  .updated { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;
+    padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 7px; border-radius: 100px;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--ink-2); font-weight: 600; font-size: 11.5px; letter-spacing: 0; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--status-good); }
+  .badge.pending::before { background: var(--amber); }
+  h1 { margin: 0; font-size: 27px; font-weight: 900; letter-spacing: -0.01em; }
+  .updated { font-size: 12px; color: var(--muted); }
 
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-  .tile {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 15px 17px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .tile-label { font-size: 12px; color: var(--ink-2); font-weight: 500; }
-  .tile-value { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .tile.accent .tile-value { color: var(--meta); }
+  .scope { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .scope-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-right: 4px; }
+  .pill { appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
+    font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 100px; cursor: pointer; }
+  .pill:hover { border-color: var(--border-2); }
+  .pill[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--page); }
 
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .tile-label { font-size: 12px; color: var(--ink-2); font-weight: 600; }
+  .tile-label small { font-weight: 500; color: var(--muted); }
+  .tile-value { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .tile.accent .tile-value { color: var(--accent); }
+  .tile-split { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--muted); }
+  .tile-split span { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+  .dot.meta { background: var(--meta); }
+  .dot.tiktok { background: var(--tiktok); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px 14px; box-shadow: var(--shadow); }
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .section-title { font-size: 15px; font-weight: 700; }
-  .section-sub { font-size: 12.5px; color: var(--muted); }
+  .section-sub { font-size: 12px; color: var(--muted); }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 22px 16px; box-shadow: var(--shadow); }
+  .table-scroll { overflow-x: auto; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 900px; }
+  th { text-align: right; font-size: 11px; font-weight: 700; color: var(--muted); padding: 0 10px 9px;
+    border-bottom: 1px solid var(--border); white-space: nowrap; vertical-align: bottom; }
+  td { padding: 11px 10px; border-bottom: 1px solid var(--border); font-size: 13px; text-align: right;
+    white-space: nowrap; font-variant-numeric: tabular-nums; }
+  th.l, td.l { text-align: left; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.name { font-weight: 600; white-space: normal; min-width: 180px; }
+  td .sub { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  td.tp { color: var(--ink-2); }
+  td.tp .rate { font-size: 11px; color: var(--muted); margin-left: 4px; }
+  .th-note { display: block; font-size: 10px; font-weight: 500; color: var(--muted); }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: var(--surface-2); }
+  tr.selected td { background: var(--accent-soft); }
+  .caret { color: var(--muted); font-size: 11px; display: inline-block; transition: transform 0.15s ease; }
+  tr.open .caret { transform: rotate(90deg); }
+  .plat { display: inline-flex; align-items: center; gap: 5px; }
+  .plat.empty { color: var(--muted); }
+  .span-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 100px;
+    background: var(--surface-3); color: var(--ink-2); margin-left: 6px; vertical-align: 1px; }
+  tr.detail-row td { padding: 12px 10px 16px; background: var(--surface-2); text-align: left; white-space: normal; }
+  tfoot td { font-weight: 700; border-top: 1px solid var(--border-2); border-bottom: none; }
 
-  .chart-wrap { position: relative; margin-top: 14px; }
+  .cpv-pill { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; padding: 3px 9px; border-radius: 100px;
+    background: var(--surface-3); color: var(--ink-2); }
+  .cpv-pill.good { background: var(--status-good-soft); color: var(--status-good); }
+  .cpv-pill.bad { background: var(--status-bad-soft); color: var(--status-bad); }
+  .cpv-pill .arrow { font-size: 9px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+  .scard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px; border-top: 3px solid var(--border-2); }
+  .scard.meta { border-top-color: var(--meta); }
+  .scard.tiktok { border-top-color: var(--tiktok); }
+  .scard-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .scard-plat { font-size: 11px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .scard-name { font-size: 14px; font-weight: 700; margin-top: 2px; }
+  .scard-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; background: var(--surface-2);
+    border: 1px solid var(--border); color: var(--ink-2); }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 12px; }
+  .m-label { font-size: 10.5px; color: var(--muted); }
+  .m-value { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .scard-note { font-size: 11.5px; color: var(--ink-2); padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.55; }
+
+  .chart-legend { display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .sw.good { background: var(--status-good); } .sw.bad { background: var(--status-bad); }
+  .sw.mid { background: var(--surface-3); border: 1px solid var(--border-2); }
+  .chart-wrap { position: relative; margin-top: 10px; }
   .chart-scroll { overflow-x: auto; }
-  svg.trend { display: block; width: 100%; min-width: 640px; height: auto; }
+  svg.chart { display: block; width: 100%; min-width: 680px; height: auto; }
   .gridline { stroke: var(--grid); stroke-width: 1; }
   .baseline { stroke: var(--baseline); stroke-width: 1; }
-  .axis-label { fill: var(--muted); font-size: 10.5px; font-family: "Noto Sans KR", sans-serif; }
-  .axis-y-label { fill: var(--muted); font-size: 10.5px; font-family: "Noto Sans KR", sans-serif; }
+  .axis { fill: var(--muted); font-size: 10.5px; font-family: "Noto Sans KR", sans-serif; }
   .bar { cursor: pointer; }
-  .bar-best-label { fill: var(--good); font-size: 11px; font-weight: 700; font-family: "Noto Sans KR", sans-serif; }
-  .bar-worst-label { fill: var(--bad); font-size: 11px; font-weight: 700; font-family: "Noto Sans KR", sans-serif; }
-  .tooltip {
-    position: absolute; pointer-events: none;
-    background: var(--surface); border: 1px solid var(--border-2); border-radius: 10px;
-    box-shadow: var(--shadow); padding: 10px 12px; font-size: 12px; min-width: 190px;
-    opacity: 0; transform: translate(-50%, -108%); transition: opacity 0.1s ease; z-index: 5;
-  }
-  .tooltip-date { font-weight: 700; margin-bottom: 6px; color: var(--ink); }
-  .tooltip-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 2px 0; }
-  .tooltip-row .k { color: var(--ink-2); }
-  .tooltip-row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .tooltip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border-2);
+    border-radius: 10px; box-shadow: var(--shadow); padding: 9px 11px; font-size: 12px; min-width: 200px;
+    opacity: 0; transform: translate(-50%, -108%); transition: opacity 0.1s ease; z-index: 5; }
+  .tt-title { font-weight: 700; margin-bottom: 5px; }
+  .tt-row { display: flex; justify-content: space-between; gap: 12px; padding: 1px 0; }
+  .tt-row .k { color: var(--ink-2); } .tt-row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  .chart-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
-  .chart-legend .item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); }
-  .chart-legend .sw { width: 10px; height: 10px; border-radius: 3px; }
-  .chart-legend .sw.good { background: var(--status-good); }
-  .chart-legend .sw.bad { background: var(--status-bad); }
-  .chart-legend .sw.mid { background: var(--surface-3); border: 1px solid var(--border-2); }
-
-  /* ---- monthly / period summary tables ---- */
-  .table-scroll { overflow-x: auto; margin-top: 14px; }
-  table.summary-table, table.period-table { width: 100%; border-collapse: collapse; min-width: 640px; }
-  .summary-table th, .period-table th {
-    text-align: right; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;
-    color: var(--muted); padding: 0 10px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
-  }
-  .summary-table th:first-child, .period-table th:nth-child(2) { text-align: left; }
-  .summary-table td, .period-table td {
-    padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px;
-    text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
-  }
-  .summary-table td:first-child, .period-table td:nth-child(2) { text-align: left; }
-  .summary-table tr:last-child td, .period-table tr.period-row:last-child td { border-bottom: none; }
-  .platform-cell { display: inline-flex; align-items: center; gap: 5px; }
-  .platform-cell .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
-  .platform-cell.meta .dot { background: var(--meta); }
-  .platform-cell.tiktok .dot { background: var(--amber); }
-  .platform-cell.empty { color: var(--muted); }
-  .period-row { cursor: pointer; }
-  .period-row:hover { background: var(--surface-2); }
-  .period-row .caret { color: var(--muted); font-size: 11px; transition: transform 0.15s ease; display: inline-block; }
-  .period-row.open .caret { transform: rotate(90deg); }
-  .period-detail-row td { padding: 14px 10px 18px; border-bottom: 1px solid var(--border); }
-  .period-cpv { font-weight: 700; }
-
-  /* ---- per-setting detail cards ---- */
-  .detail-list { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
-  .detail-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 16px 18px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
-  }
-  .detail-card.inactive { opacity: 0.6; }
-  .detail-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-  .detail-title-block { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .detail-date { font-size: 11px; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
-  .detail-name { font-size: 15px; font-weight: 700; }
-  .detail-campaign { font-size: 11.5px; color: var(--muted); }
-  .status-chip { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; background: var(--surface-3); color: var(--ink-2); }
-  .status-chip.active { background: var(--meta-soft); color: var(--meta); }
-
-  .setting-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .setting-chip {
-    font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 100px;
-    background: var(--surface-2); border: 1px solid var(--border); color: var(--ink-2);
-  }
-
-  .metric-row { display: flex; flex-wrap: wrap; gap: 18px; }
-  .metric { display: flex; flex-direction: column; gap: 2px; }
-  .metric-label { font-size: 10.5px; color: var(--muted); }
-  .metric-value { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
-  .cpv-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-weight: 700; font-variant-numeric: tabular-nums;
-    padding: 4px 10px; border-radius: 100px;
-    background: var(--surface-3); color: var(--ink-2); font-size: 13px;
-  }
-  .cpv-pill.good { background: var(--status-good-soft); color: var(--status-good); }
-  .cpv-pill.bad  { background: var(--status-bad-soft);  color: var(--status-bad); }
-  .cpv-pill .arrow { font-size: 10px; }
-
-  .detail-summary {
-    font-size: 12.5px; color: var(--ink-2); line-height: 1.6;
-    padding-top: 10px; border-top: 1px solid var(--border);
-  }
-  .detail-summary b { color: var(--ink); }
-
-  .guide {
-    display: flex; gap: 14px; align-items: flex-start;
-    background: var(--meta-soft); border: 1px solid var(--border); border-radius: 14px;
-    padding: 18px 20px;
-  }
-  .guide .mark { font-size: 20px; line-height: 1.5; }
-  .guide-body p { margin: 0 0 8px; font-size: 14px; line-height: 1.65; }
-  .guide-body p:last-child { margin-bottom: 0; }
-  .guide-body b { font-variant-numeric: tabular-nums; }
-  .guide-title { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--meta); margin-bottom: 6px; }
-
-  footer { text-align: center; font-size: 12px; color: var(--muted); padding-top: 8px; }
-
-  @media (max-width: 720px) { h1 { font-size: 21px; } }
+  .guide { display: flex; gap: 14px; background: var(--accent-soft); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+  .guide-title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .guide p { margin: 0 0 7px; font-size: 13.5px; line-height: 1.65; }
+  .guide p:last-child { margin-bottom: 0; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); line-height: 1.7; }
+  @media (max-width: 720px) { .wrap { padding: 24px 16px 60px; } h1 { font-size: 21px; } .metrics { grid-template-columns: repeat(2, 1fr); } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="head">
-    <div class="head-left">
-      <div class="eyebrow">
-        금별맥주AD · INSTAR_게시물광고
+    <div>
+      <div class="eyebrow">금별맥주 · 브랜딩 영상 광고
         <span class="badge">Meta+TikTok 실데이터 · 자동 갱신</span>
         <span class="badge pending">자연조회수 연동 예정</span>
       </div>
@@ -283,18 +175,40 @@
     <div class="updated" id="updatedAt"></div>
   </div>
 
+  <div class="scope" id="scope"></div>
+
   <div class="tiles" id="tiles"></div>
 
   <div class="card">
     <div class="section-head">
-      <div class="section-title">월별 통합 성과 (Meta + TikTok)</div>
-      <div class="section-sub">한 달에 얼마 쓰고 얼마 조회됐는지 · Meta+TikTok 합산</div>
+      <div class="section-title" id="campTitle"></div>
+      <div class="section-sub" id="campSub"></div>
     </div>
     <div class="table-scroll">
-      <table class="summary-table">
-        <thead>
-          <tr><th>월</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th></tr>
-        </thead>
+      <table>
+        <thead><tr>
+          <th></th><th class="l">기간</th><th class="l">캠페인</th>
+          <th>광고비</th><th>조회수</th><th>트루플레이<span class="th-note">Meta 3초 · TikTok 6초</span></th>
+          <th>조회당 비용</th><th>Meta<span class="th-note">광고비 · 조회수</span></th><th>TikTok<span class="th-note">광고비 · 조회수</span></th>
+        </tr></thead>
+        <tbody id="campRows"></tbody>
+        <tfoot id="campFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <div class="section-title">월별 추이</div>
+      <div class="section-sub">행을 누르면 그 달로 이동 · 월을 걸친 캠페인은 실제 집행일 기준으로 나눠서 합산</div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th class="l">월</th><th class="l">집행 캠페인</th><th>광고비</th><th>조회수</th>
+          <th>트루플레이<span class="th-note">Meta 3초 · TikTok 6초</span></th><th>조회당 비용</th>
+          <th>Meta<span class="th-note">광고비 · 조회수</span></th><th>TikTok<span class="th-note">광고비 · 조회수</span></th>
+        </tr></thead>
         <tbody id="monthRows"></tbody>
       </table>
     </div>
@@ -302,349 +216,389 @@
 
   <div class="card">
     <div class="section-head">
-      <div class="section-title">세팅별 광고 효율 비교 (광고비 ÷ 3초조회수)</div>
-      <div class="section-sub">막대가 낮을수록 조회 1회당 비용이 저렴함 · 이름의 앞자리는 집행 시작일</div>
+      <div class="section-title">캠페인별 조회당 비용 비교</div>
+      <div class="section-sub">막대가 낮을수록 효율이 좋음 · 선택한 달의 캠페인만 진하게 표시</div>
     </div>
     <div class="chart-legend">
-      <div class="item"><span class="sw good"></span>효율 좋음 (CPV 하위 1/3)</div>
-      <div class="item"><span class="sw mid"></span>보통</div>
-      <div class="item"><span class="sw bad"></span>효율 나쁨 (CPV 상위 1/3)</div>
+      <span><i class="sw good"></i>효율 좋음 (하위 1/3)</span>
+      <span><i class="sw mid"></i>보통</span>
+      <span><i class="sw bad"></i>효율 나쁨 (상위 1/3)</span>
     </div>
     <div class="chart-wrap" id="chartWrap">
-      <div class="chart-scroll">
-        <svg class="trend" id="cpvSvg" viewBox="0 0 1040 280" preserveAspectRatio="none"></svg>
-      </div>
+      <div class="chart-scroll"><svg class="chart" id="chart" viewBox="0 0 1040 270" preserveAspectRatio="none"></svg></div>
       <div class="tooltip" id="tooltip"></div>
     </div>
   </div>
 
-  <div>
-    <div class="section-head">
-      <div class="section-title">캠페인 기간별 통합 성과 — 클릭해서 세팅 상세 보기</div>
-      <div class="section-sub">기간 = 같은 날 시작한 세팅 묶음(Meta+TikTok 동시 집행 기준) · 행을 누르면 개별 세팅이 펼쳐짐</div>
-    </div>
-    <div class="table-scroll">
-      <table class="period-table">
-        <thead>
-          <tr><th></th><th>기간</th><th>세팅수</th><th>통합 광고비</th><th>통합 조회수</th><th>통합 CPV</th><th>Meta</th><th>TikTok</th></tr>
-        </thead>
-        <tbody id="periodRows"></tbody>
-      </table>
-    </div>
-  </div>
-
   <div class="guide">
-    <div class="mark">💡</div>
-    <div class="guide-body">
-      <div class="guide-title">다음 세팅 가이드</div>
-      <div id="guideText"></div>
+    <div>💡</div>
+    <div>
+      <div class="guide-title">다음 세팅 가이드 (전체 기간 데이터 기준 · 갱신마다 자동 작성)</div>
+      <div id="guide"></div>
     </div>
   </div>
 
-  <footer>Meta + TikTok Marketing API 실데이터 · GitHub Actions로 자동 갱신 · 자연조회수 수동입력은 다음 업데이트에서 추가 예정</footer>
+  <footer>
+    조회수 = 영상 재생수 (Meta·TikTok video_play_actions) · 트루플레이 = Meta 3초 조회 · TikTok 6초 조회<br>
+    조회당 비용 = 광고비 ÷ 조회수 · GitHub Actions로 월·목 오전 9시 자동 갱신
+  </footer>
 </div>
 
 <script>
-  // 이 블록은 src/report.py가 매 실행마다 통째로 교체합니다.
-  const CAMPAIGNS = [{"platform": "meta", "campaign_id": "120232487906640203", "campaign_name": "250905_브랜딩영상", "adset_id": "120232487907070203", "adset_name": "세계속금별맥주", "date": "2025-09-05", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 71000, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": ["meta"], "spend": 746780.0, "impressions": 634732, "reach": 539615, "ad_view_label": "3초 조회", "ad_view_count": 42884, "views": 42884, "completion_views": 1009, "completion_rate": 2.4, "cpv": 17.41}, {"platform": "meta", "campaign_id": "120233728535570203", "campaign_name": "251001_브랜딩_엄마맥주", "adset_id": "120233728535580203", "adset_name": "20251001_브랜딩_엄마맥주", "date": "2025-10-01", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 70000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 319389.0, "impressions": 261535, "reach": 253736, "ad_view_label": "3초 조회", "ad_view_count": 6187, "views": 6187, "completion_views": 166, "completion_rate": 2.7, "cpv": 51.62}, {"platform": "meta", "campaign_id": "120233856510490203", "campaign_name": "251002_브랜딩_명화", "adset_id": "120233856510500203", "adset_name": "20251002_브랜딩_명화", "date": "2025-10-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 50000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 169337.0, "impressions": 136738, "reach": 129542, "ad_view_label": "3초 조회", "ad_view_count": 5730, "views": 5730, "completion_views": 85, "completion_rate": 1.5, "cpv": 29.55}, {"platform": "meta", "campaign_id": "120236167903370203", "campaign_name": "251104_메티즌x금별", "adset_id": "120236167903760203", "adset_name": "251104_메티즌x금별", "date": "2025-11-04", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 142800, "budget_period": "일", "age_min": 21, "age_max": 65, "platforms": ["instagram"], "spend": 970391.0, "impressions": 633340, "reach": 609991, "ad_view_label": "3초 조회", "ad_view_count": 79881, "views": 79881, "completion_views": 91, "completion_rate": 0.1, "cpv": 12.15}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217289450203", "adset_name": "260126_항정살 숙주볶음 우동_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 287268.0, "impressions": 239423, "reach": 192107, "ad_view_label": "3초 조회", "ad_view_count": 13934, "views": 13934, "completion_views": 166, "completion_rate": 1.2, "cpv": 20.62}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427740203", "adset_name": "260126_부대찌개_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 60287.0, "impressions": 49933, "reach": 42183, "ad_view_label": "3초 조회", "ad_view_count": 2405, "views": 2405, "completion_views": 53, "completion_rate": 2.2, "cpv": 25.07}, {"platform": "meta", "campaign_id": "120240217289470203", "campaign_name": "260126_신메뉴 1차", "adset_id": "120240217427750203", "adset_name": "260126_통새우 가라아게_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 400000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 52427.0, "impressions": 44377, "reach": 37859, "ad_view_label": "3초 조회", "ad_view_count": 4818, "views": 4818, "completion_views": 35, "completion_rate": 0.7, "cpv": 10.88}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444641820203", "adset_name": "260202_한우대창 전골_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 1629.0, "impressions": 1790, "reach": 1770, "ad_view_label": "3초 조회", "ad_view_count": 293, "views": 293, "completion_views": 0, "completion_rate": 0.0, "cpv": 5.56}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444749940203", "adset_name": "260202_뿌링클 콘립_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 7939.0, "impressions": 7686, "reach": 6635, "ad_view_label": "3초 조회", "ad_view_count": 1191, "views": 1191, "completion_views": 38, "completion_rate": 3.2, "cpv": 6.67}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444833250203", "adset_name": "260202_모둠꼬치어묵탕_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 200193.0, "impressions": 175731, "reach": 138345, "ad_view_label": "3초 조회", "ad_view_count": 6155, "views": 6155, "completion_views": 20, "completion_rate": 0.3, "cpv": 32.53}, {"platform": "meta", "campaign_id": "120240444641810203", "campaign_name": "260202_신메뉴 2차", "adset_id": "120240444854270203", "adset_name": "260202_종합_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 500000, "budget_period": "총(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 290127.0, "impressions": 262221, "reach": 189751, "ad_view_label": "3초 조회", "ad_view_count": 6206, "views": 6206, "completion_views": 236, "completion_rate": 3.8, "cpv": 46.75}, {"platform": "meta", "campaign_id": "120243455854640203", "campaign_name": "260409_별이 ep.01,02 (01-면접 / 02-목욕재계)", "adset_id": "120243455854650203", "adset_name": "260409_ep1,2", "date": "2026-04-09", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 91000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 460448.0, "impressions": 412691, "reach": 251574, "ad_view_label": "3초 조회", "ad_view_count": 21540, "views": 21540, "completion_views": 1700, "completion_rate": 7.9, "cpv": 21.38}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "260601_별이 ep.03,05 도달 (3-출장다녀왔습니다 / 5-DJ STAR)", "adset_id": "120246343370710203", "adset_name": "260518_ep3_인지도", "date": "2026-05-18", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224014.0, "impressions": 182053, "reach": 114207, "ad_view_label": "3초 조회", "ad_view_count": 2926, "views": 2926, "completion_views": 24, "completion_rate": 0.8, "cpv": 76.56}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "260601_별이 ep.03,05 트래픽  (3-출장다녀왔습니다 / 5-DJ STAR)", "adset_id": "120246345567270203", "adset_name": "260518_ep3_트래픽", "date": "2026-05-18", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 68437.0, "impressions": 2800, "reach": 2406, "ad_view_label": "3초 조회", "ad_view_count": 525, "views": 525, "completion_views": 52, "completion_rate": 9.9, "cpv": 130.36}, {"platform": "meta", "campaign_id": "120246345567250203", "campaign_name": "260601_별이 ep.03,05 트래픽  (3-출장다녀왔습니다 / 5-DJ STAR)", "adset_id": "120247698382770203", "adset_name": "260601_ep.5_트래픽", "date": "2026-06-01", "status": "PAUSED", "objective": "OUTCOME_TRAFFIC", "optimization_goal": "PROFILE_VISIT", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 30000, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 67950.0, "impressions": 5218, "reach": 4687, "ad_view_label": "3초 조회", "ad_view_count": 988, "views": 988, "completion_views": 20, "completion_rate": 2.0, "cpv": 68.78}, {"platform": "meta", "campaign_id": "120246343370700203", "campaign_name": "260601_별이 ep.03,05 도달 (3-출장다녀왔습니다 / 5-DJ STAR)", "adset_id": "120247698816380203", "adset_name": "260601_ep5_인지도", "date": "2026-06-01", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 35700, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 224289.0, "impressions": 174047, "reach": 108236, "ad_view_label": "3초 조회", "ad_view_count": 11293, "views": 11293, "completion_views": 67, "completion_rate": 0.6, "cpv": 19.86}, {"platform": "meta", "campaign_id": "120250417757330203", "campaign_name": "260703_별이 ep.07 2026년 177호 다이어트 실패 (신메뉴 홍보)", "adset_id": "120250417757340203", "adset_name": "260703_금쪽같은알바생 별이 ep7", "date": "2026-07-03", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 31800, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 202518.0, "impressions": 217609, "reach": 153529, "ad_view_label": "3초 조회", "ad_view_count": 24949, "views": 24949, "completion_views": 158, "completion_rate": 0.6, "cpv": 8.12}, {"platform": "meta", "campaign_id": "120250803602480203", "campaign_name": "260716_2026년 상반기 신메뉴 출시", "adset_id": "120250803602500203", "adset_name": "260716_2026년 상반기 신메뉴 출시", "date": "2026-07-16", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "REACH", "bid_strategy": null, "budget": 31800, "budget_period": "일", "age_min": 20, "age_max": 65, "platforms": ["facebook", "instagram"], "spend": 200886.0, "impressions": 232697, "reach": 171624, "ad_view_label": "3초 조회", "ad_view_count": 19335, "views": 19335, "completion_views": 837, "completion_rate": 4.3, "cpv": 10.39}, {"platform": "meta", "campaign_id": "120251204442560203", "campaign_name": "260803_별이 ep.08 여름 휴가 시즌 영상", "adset_id": "120251204442580203", "adset_name": "260803_금쪽같은알바생 별이", "date": "2026-08-03", "status": "PAUSED", "objective": "OUTCOME_AWARENESS", "optimization_goal": "IMPRESSIONS", "bid_strategy": "LOWEST_COST_WITHOUT_CAP", "budget": 32000, "budget_period": "일", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203923.0, "impressions": 183480, "reach": 108380, "ad_view_label": "3초 조회", "ad_view_count": 4729, "views": 4729, "completion_views": 80, "completion_rate": 1.7, "cpv": 43.12}, {"platform": "meta", "campaign_id": "120251424785880203", "campaign_name": "260810_별이 ep.09 루프탑 파티", "adset_id": "120251424785890203", "adset_name": "2609_ep9", "date": "2026-08-10", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 7000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 44168.0, "impressions": 13941, "reach": 13169, "ad_view_label": "3초 조회", "ad_view_count": 8491, "views": 8491, "completion_views": 373, "completion_rate": 4.4, "cpv": 5.2}, {"platform": "meta", "campaign_id": "120251729011550203", "campaign_name": "260824_애니_프토", "adset_id": "120251729011560203", "adset_name": "260824_달프토_참여", "date": "2026-08-24", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 18, "age_max": 65, "platforms": ["instagram"], "spend": 203890.0, "impressions": 76005, "reach": 65190, "ad_view_label": "3초 조회", "ad_view_count": 43430, "views": 43430, "completion_views": 3372, "completion_rate": 7.8, "cpv": 4.69}, {"platform": "meta", "campaign_id": "120251813215550203", "campaign_name": "260831_애니_명란", "adset_id": "120251813215570203", "adset_name": "260831_짭명란_참여", "date": "2026-08-31", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 32000, "budget_period": "일(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 201382.0, "impressions": 58318, "reach": 48717, "ad_view_label": "3초 조회", "ad_view_count": 32810, "views": 32810, "completion_views": 6654, "completion_rate": 20.3, "cpv": 6.14}, {"platform": "meta", "campaign_id": "120251911784940203", "campaign_name": "260907_별이 ep.10 따라하기", "adset_id": "120251911784950203", "adset_name": "260907_별이 ep.10 따라하기_참여", "date": "2026-09-07", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 35700, "budget_period": "일(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram"], "spend": 223960.0, "impressions": 40051, "reach": 33634, "ad_view_label": "3초 조회", "ad_view_count": 18469, "views": 18469, "completion_views": 3381, "completion_rate": 18.3, "cpv": 12.13}, {"platform": "meta", "campaign_id": "120252130958910203", "campaign_name": "260923_추석영상", "adset_id": "120252130958900203", "adset_name": "260923_추석영상", "date": "2026-09-23", "status": "PAUSED", "objective": "OUTCOME_ENGAGEMENT", "optimization_goal": "THRUPLAY", "bid_strategy": null, "budget": 100000, "budget_period": "일(캠페인 예산)", "age_min": 20, "age_max": 65, "platforms": ["instagram", "threads"], "spend": 357357.0, "impressions": 113621, "reach": 103277, "ad_view_label": "3초 조회", "ad_view_count": 82056, "views": 82056, "completion_views": 3688, "completion_rate": 4.5, "cpv": 4.36}, {"platform": "tiktok", "campaign_id": "1877013368918369", "campaign_name": "260923_추석영상", "adset_id": "1877013481906498", "adset_name": "260923_추석영상", "date": "2026-09-23", "status": "ACTIVE", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": 100000.0, "budget_period": "일", "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 400000.0, "impressions": 493287, "reach": 425315, "ad_view_label": "6초 조회", "ad_view_count": 53855, "views": 53855, "completion_views": 5389, "completion_rate": 10.0, "cpv": 7.43}, {"platform": "tiktok", "campaign_id": "1875658042577649", "campaign_name": "260907_별이 ep.10 따라하기", "adset_id": "1875658555574402", "adset_name": "260907_별이 ep.10 따라하기_도달", "date": "2026-09-07", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 250000.0, "impressions": 251195, "reach": 174767, "ad_view_label": "6초 조회", "ad_view_count": 5063, "views": 5063, "completion_views": 450, "completion_rate": 8.9, "cpv": 49.38}, {"platform": "tiktok", "campaign_id": "1875023391582546", "campaign_name": "260831_애니_명란", "adset_id": "1875023405365442", "adset_name": "260831_짭명란_도달", "date": "2026-08-31", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 222839.0, "impressions": 286188, "reach": 235546, "ad_view_label": "6초 조회", "ad_view_count": 12969, "views": 12969, "completion_views": 1717, "completion_rate": 13.2, "cpv": 17.18}, {"platform": "tiktok", "campaign_id": "1874382568955410", "campaign_name": "260824_애니_프토", "adset_id": "1874382568955426", "adset_name": "260824_달프토_도달", "date": "2026-08-24", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 150000.0, "impressions": 281756, "reach": 238747, "ad_view_label": "6초 조회", "ad_view_count": 16897, "views": 16897, "completion_views": 1201, "completion_rate": 7.1, "cpv": 8.88}, {"platform": "tiktok", "campaign_id": "1873117650254881", "campaign_name": "260901_별이 ep.09 루프탑 파티", "adset_id": "1873117669936258", "adset_name": "1_도달", "date": "2026-08-10", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": 150000.0, "budget_period": "총", "age_min": 18, "age_max": 34, "platforms": ["tiktok"], "spend": 149889.0, "impressions": 241760, "reach": 211414, "ad_view_label": "6초 조회", "ad_view_count": 8613, "views": 8613, "completion_views": 489, "completion_rate": 5.7, "cpv": 17.4}, {"platform": "tiktok", "campaign_id": "1872478266457297", "campaign_name": "260803_별이 ep.08 여름 휴가 시즌 영상", "adset_id": "1872478181022978", "adset_name": "260803_금쪽같은알바생 별이", "date": "2026-08-03", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 149944.0, "impressions": 435855, "reach": 395841, "ad_view_label": "6초 조회", "ad_view_count": 12533, "views": 12533, "completion_views": 1109, "completion_rate": 8.8, "cpv": 11.96}, {"platform": "tiktok", "campaign_id": "1870852034653362", "campaign_name": "260716_2026년 상반기 신메뉴 출시", "adset_id": "1870852034654418", "adset_name": "260716_2026년 상반기 신메뉴 출시", "date": "2026-07-16", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 149526.0, "impressions": 334943, "reach": 228977, "ad_view_label": "6초 조회", "ad_view_count": 5241, "views": 5241, "completion_views": 1098, "completion_rate": 21.0, "cpv": 28.53}, {"platform": "tiktok", "campaign_id": "1869671060929586", "campaign_name": "260703_별이 ep.07 2026년 177호 다이어트 실패", "adset_id": "1869671060931778", "adset_name": "260703_ep7", "date": "2026-07-03", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 149696.0, "impressions": 314895, "reach": 202968, "ad_view_label": "6초 조회", "ad_view_count": 7679, "views": 7679, "completion_views": 191, "completion_rate": 2.5, "cpv": 19.49}, {"platform": "tiktok", "campaign_id": "1866777610628417", "campaign_name": "260601_별이 ep.05 DJ STAR", "adset_id": "1866777610628433", "adset_name": "260601_ep5", "date": "2026-06-01", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 149827.0, "impressions": 281721, "reach": 195426, "ad_view_label": "6초 조회", "ad_view_count": 9424, "views": 9424, "completion_views": 295, "completion_rate": 3.1, "cpv": 15.9}, {"platform": "tiktok", "campaign_id": "1865513031475554", "campaign_name": "260518_별이 ep.03 출장 다녀왔습니다", "adset_id": "1865513031475570", "adset_name": "260518_ep3", "date": "2026-05-18", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 149903.0, "impressions": 333753, "reach": 242771, "ad_view_label": "6초 조회", "ad_view_count": 4824, "views": 4824, "completion_views": 354, "completion_rate": 7.3, "cpv": 31.07}, {"platform": "tiktok", "campaign_id": "1861972554863745", "campaign_name": "260409_별이 ep.01,02 (01-면접 / 02-목욕재계)", "adset_id": "1861972737537634", "adset_name": "260409_ep1,2", "date": "2026-04-09", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 18, "age_max": 100, "platforms": ["tiktok"], "spend": 282504.0, "impressions": 563581, "reach": 298488, "ad_view_label": "6초 조회", "ad_view_count": 21808, "views": 21808, "completion_views": 9050, "completion_rate": 41.5, "cpv": 12.95}, {"platform": "tiktok", "campaign_id": "1855994152068241", "campaign_name": "260202_신메뉴 2차", "adset_id": "1855994207108433", "adset_name": "260202_한우대창 전골_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 140538.0, "impressions": 315200, "reach": 191870, "ad_view_label": "6초 조회", "ad_view_count": 6056, "views": 6056, "completion_views": 420, "completion_rate": 6.9, "cpv": 23.21}, {"platform": "tiktok", "campaign_id": "1855994152068241", "campaign_name": "260202_신메뉴 2차", "adset_id": "1855994633732210", "adset_name": "260202_모둠꼬치어묵탕_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 148349.0, "impressions": 334066, "reach": 210274, "ad_view_label": "6초 조회", "ad_view_count": 12608, "views": 12608, "completion_views": 570, "completion_rate": 4.5, "cpv": 11.77}, {"platform": "tiktok", "campaign_id": "1855994152068241", "campaign_name": "260202_신메뉴 2차", "adset_id": "1855995040674961", "adset_name": "260202_콘립갈비_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 117543.0, "impressions": 266972, "reach": 164818, "ad_view_label": "6초 조회", "ad_view_count": 23677, "views": 23677, "completion_views": 6283, "completion_rate": 26.5, "cpv": 4.96}, {"platform": "tiktok", "campaign_id": "1855994152068241", "campaign_name": "260202_신메뉴 2차", "adset_id": "1855995181196513", "adset_name": "260202_종합_신메뉴 2차", "date": "2026-02-02", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 93570.0, "impressions": 213159, "reach": 141495, "ad_view_label": "6초 조회", "ad_view_count": 5474, "views": 5474, "completion_views": 1111, "completion_rate": 20.3, "cpv": 17.09}, {"platform": "tiktok", "campaign_id": "1855363899412722", "campaign_name": "260126_신메뉴 1차", "adset_id": "1855447910509745", "adset_name": "260127_항정살 숙주볶음 우동_신메뉴 1차", "date": "2026-01-27", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 90260.0, "impressions": 190870, "reach": 131455, "ad_view_label": "6초 조회", "ad_view_count": 7144, "views": 7144, "completion_views": 617, "completion_rate": 8.6, "cpv": 12.63}, {"platform": "tiktok", "campaign_id": "1855363899412722", "campaign_name": "260126_신메뉴 1차", "adset_id": "1855364380125730", "adset_name": "260126_부대찌개_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 188750.0, "impressions": 375827, "reach": 252137, "ad_view_label": "6초 조회", "ad_view_count": 13098, "views": 13098, "completion_views": 3179, "completion_rate": 24.3, "cpv": 14.41}, {"platform": "tiktok", "campaign_id": "1855363899412722", "campaign_name": "260126_신메뉴 1차", "adset_id": "1855364516188242", "adset_name": "260126_통새우가라아게_신메뉴 1차", "date": "2026-01-26", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 120990.0, "impressions": 249535, "reach": 166031, "ad_view_label": "6초 조회", "ad_view_count": 11906, "views": 11906, "completion_views": 968, "completion_rate": 8.1, "cpv": 10.16}, {"platform": "tiktok", "campaign_id": "1844827038258209", "campaign_name": "251002_브랜딩_엄마", "adset_id": "1844827189986338", "adset_name": "20251002_브랜딩_엄마", "date": "2025-10-02", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 209425.0, "impressions": 179549, "reach": 114514, "ad_view_label": "6초 조회", "ad_view_count": 4410, "views": 4410, "completion_views": 828, "completion_rate": 18.8, "cpv": 47.49}, {"platform": "tiktok", "campaign_id": "1844761854896242", "campaign_name": "251001_브랜딩_명화", "adset_id": "1844761944708209", "adset_name": "20251002_브랜딩_명화", "date": "2025-10-01", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": 25, "age_max": 100, "platforms": ["tiktok"], "spend": 362779.0, "impressions": 283100, "reach": 183004, "ad_view_label": "6초 조회", "ad_view_count": 14078, "views": 14078, "completion_views": 1624, "completion_rate": 11.5, "cpv": 25.77}, {"platform": "tiktok", "campaign_id": "1842412455891057", "campaign_name": "250905_브랜딩영상2회차", "adset_id": "1842412485263474", "adset_name": "광고 그룹 20250905053832", "date": "2025-09-05", "status": "PAUSED", "objective": "REACH", "optimization_goal": "REACH", "bid_strategy": "CPMV", "budget": null, "budget_period": null, "age_min": null, "age_max": null, "platforms": ["tiktok"], "spend": 0.0, "impressions": 0, "reach": 0, "ad_view_label": "6초 조회", "ad_view_count": 0, "views": 0, "completion_views": 0, "completion_rate": 0.0, "cpv": null}];
-  const UPDATED_AT = "2026-09-29 16:59 KST";
+  // Data blocks below are replaced by src/report.py on every run.
+  const SETTINGS = [{"key":"meta:120252130958900203","platform":"meta","name":"260923_추석영상","campaign_name":"260923_추석영상","start":"2026-09-23","end":"2026-09-26","status":"PAUSED","objective":"OUTCOME_ENGAGEMENT","optimization_goal":"THRUPLAY","bid_strategy":null,"budget":100000,"budget_period":"일(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram","threads"]},{"key":"meta:120251911784950203","platform":"meta","name":"260907_별이 ep.10 따라하기_참여","campaign_name":"260907_별이 ep.10 따라하기","start":"2026-09-07","end":"2026-09-13","status":"PAUSED","objective":"OUTCOME_ENGAGEMENT","optimization_goal":"THRUPLAY","bid_strategy":null,"budget":35700,"budget_period":"일(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120251813215570203","platform":"meta","name":"260831_짭명란_참여","campaign_name":"260831_애니_명란","start":"2026-08-31","end":"2026-09-06","status":"PAUSED","objective":"OUTCOME_ENGAGEMENT","optimization_goal":"THRUPLAY","bid_strategy":null,"budget":32000,"budget_period":"일(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120251729011560203","platform":"meta","name":"260824_달프토_참여","campaign_name":"260824_애니_프토","start":"2026-08-24","end":"2026-08-30","status":"PAUSED","objective":"OUTCOME_ENGAGEMENT","optimization_goal":"THRUPLAY","bid_strategy":null,"budget":32000,"budget_period":"일(캠페인 예산)","age_min":18,"age_max":65,"placements":["instagram"]},{"key":"meta:120251424785890203","platform":"meta","name":"2609_ep9","campaign_name":"260810_별이 ep.09 루프탑 파티","start":"2026-08-10","end":"2026-08-16","status":"PAUSED","objective":"OUTCOME_ENGAGEMENT","optimization_goal":"THRUPLAY","bid_strategy":null,"budget":7000,"budget_period":"일(캠페인 예산)","age_min":18,"age_max":65,"placements":["instagram"]},{"key":"meta:120251204442580203","platform":"meta","name":"260803_금쪽같은알바생 별이","campaign_name":"260803_별이 ep.08 여름 휴가 시즌 영상","start":"2026-08-03","end":"2026-08-09","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"IMPRESSIONS","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":32000,"budget_period":"일","age_min":18,"age_max":65,"placements":["instagram"]},{"key":"meta:120250803602500203","platform":"meta","name":"260716_2026년 상반기 신메뉴 출시","campaign_name":"260716_2026년 상반기 신메뉴 출시","start":"2026-07-16","end":"2026-07-22","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":31800,"budget_period":"일","age_min":20,"age_max":65,"placements":["facebook","instagram"]},{"key":"meta:120250417757340203","platform":"meta","name":"260703_금쪽같은알바생 별이 ep7","campaign_name":"260703_별이 ep.07 2026년 177호 다이어트 실패 (신메뉴 홍보)","start":"2026-07-03","end":"2026-07-09","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":31800,"budget_period":"일","age_min":18,"age_max":65,"placements":["facebook","instagram"]},{"key":"meta:120247698816380203","platform":"meta","name":"260601_ep5_인지도","campaign_name":"260601_별이 ep.03,05 도달 (3-출장다녀왔습니다 / 5-DJ STAR)","start":"2026-06-01","end":"2026-06-07","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"IMPRESSIONS","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":35700,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120247698382770203","platform":"meta","name":"260601_ep.5_트래픽","campaign_name":"260601_별이 ep.03,05 트래픽  (3-출장다녀왔습니다 / 5-DJ STAR)","start":"2026-06-01","end":"2026-06-03","status":"PAUSED","objective":"OUTCOME_TRAFFIC","optimization_goal":"PROFILE_VISIT","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":30000,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120246345567270203","platform":"meta","name":"260518_ep3_트래픽","campaign_name":"260601_별이 ep.03,05 트래픽  (3-출장다녀왔습니다 / 5-DJ STAR)","start":"2026-05-18","end":"2026-05-20","status":"PAUSED","objective":"OUTCOME_TRAFFIC","optimization_goal":"PROFILE_VISIT","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":30000,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120246343370710203","platform":"meta","name":"260518_ep3_인지도","campaign_name":"260601_별이 ep.03,05 도달 (3-출장다녀왔습니다 / 5-DJ STAR)","start":"2026-05-18","end":"2026-05-24","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"IMPRESSIONS","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":35700,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120243455854650203","platform":"meta","name":"260409_ep1,2","campaign_name":"260409_별이 ep.01,02 (01-면접 / 02-목욕재계)","start":"2026-04-09","end":"2026-04-15","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"IMPRESSIONS","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":91000,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240444854270203","platform":"meta","name":"260202_종합_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":500000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240444833250203","platform":"meta","name":"260202_모둠꼬치어묵탕_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":500000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240444749940203","platform":"meta","name":"260202_뿌링클 콘립_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":500000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240444641820203","platform":"meta","name":"260202_한우대창 전골_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":500000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240217427750203","platform":"meta","name":"260126_통새우 가라아게_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-26","end":"2026-02-01","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":400000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240217427740203","platform":"meta","name":"260126_부대찌개_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-26","end":"2026-02-01","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":400000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120240217289450203","platform":"meta","name":"260126_항정살 숙주볶음 우동_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-26","end":"2026-02-01","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":null,"budget":400000,"budget_period":"총(캠페인 예산)","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120236167903760203","platform":"meta","name":"251104_메티즌x금별","campaign_name":"251104_메티즌x금별","start":"2025-11-04","end":null,"status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":142800,"budget_period":"일","age_min":21,"age_max":65,"placements":["instagram"]},{"key":"meta:120233856510500203","platform":"meta","name":"20251002_브랜딩_명화","campaign_name":"251002_브랜딩_명화","start":"2025-10-02","end":"2025-10-06","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":50000,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120233728535580203","platform":"meta","name":"20251001_브랜딩_엄마맥주","campaign_name":"251001_브랜딩_엄마맥주","start":"2025-10-01","end":"2025-10-06","status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":70000,"budget_period":"일","age_min":20,"age_max":65,"placements":["instagram"]},{"key":"meta:120232487907070203","platform":"meta","name":"세계속금별맥주","campaign_name":"250905_브랜딩영상","start":"2025-09-05","end":null,"status":"PAUSED","objective":"OUTCOME_AWARENESS","optimization_goal":"REACH","bid_strategy":"LOWEST_COST_WITHOUT_CAP","budget":71000,"budget_period":"일","age_min":21,"age_max":65,"placements":["instagram"]},{"key":"tiktok:1877013481906498","platform":"tiktok","name":"260923_추석영상","campaign_name":"260923_추석영상","start":"2026-09-23","end":"2026-09-26","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":100000,"budget_period":"일","age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1875658555574402","platform":"tiktok","name":"260907_별이 ep.10 따라하기_도달","campaign_name":"260907_별이 ep.10 따라하기","start":"2026-09-07","end":"2026-09-13","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1875023405365442","platform":"tiktok","name":"260831_짭명란_도달","campaign_name":"260831_애니_명란","start":"2026-08-31","end":"2026-09-06","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1874382568955426","platform":"tiktok","name":"260824_달프토_도달","campaign_name":"260824_애니_프토","start":"2026-08-24","end":"2026-08-30","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1873117669936258","platform":"tiktok","name":"1_도달","campaign_name":"260901_별이 ep.09 루프탑 파티","start":"2026-08-10","end":"2026-08-16","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":150000,"budget_period":"총","age_min":18,"age_max":34,"placements":["tiktok"]},{"key":"tiktok:1872478181022978","platform":"tiktok","name":"260803_금쪽같은알바생 별이","campaign_name":"260803_별이 ep.08 여름 휴가 시즌 영상","start":"2026-08-03","end":"2026-08-09","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1870852034654418","platform":"tiktok","name":"260716_2026년 상반기 신메뉴 출시","campaign_name":"260716_2026년 상반기 신메뉴 출시","start":"2026-07-16","end":"2026-07-22","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1869671060931778","platform":"tiktok","name":"260703_ep7","campaign_name":"260703_별이 ep.07 2026년 177호 다이어트 실패","start":"2026-07-03","end":"2026-07-09","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1866777610628433","platform":"tiktok","name":"260601_ep5","campaign_name":"260601_별이 ep.05 DJ STAR","start":"2026-06-01","end":"2026-06-07","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1865513031475570","platform":"tiktok","name":"260518_ep3","campaign_name":"260518_별이 ep.03 출장 다녀왔습니다","start":"2026-05-18","end":"2026-05-24","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1861972737537634","platform":"tiktok","name":"260409_ep1,2","campaign_name":"260409_별이 ep.01,02 (01-면접 / 02-목욕재계)","start":"2026-04-09","end":"2026-04-15","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":18,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855995181196513","platform":"tiktok","name":"260202_종합_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855995040674961","platform":"tiktok","name":"260202_콘립갈비_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855994633732210","platform":"tiktok","name":"260202_모둠꼬치어묵탕_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855994207108433","platform":"tiktok","name":"260202_한우대창 전골_신메뉴 2차","campaign_name":"260202_신메뉴 2차","start":"2026-02-02","end":"2026-02-08","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855447910509745","platform":"tiktok","name":"260127_항정살 숙주볶음 우동_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-27","end":"2026-02-01","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855364516188242","platform":"tiktok","name":"260126_통새우가라아게_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-26","end":"2026-02-01","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1855364380125730","platform":"tiktok","name":"260126_부대찌개_신메뉴 1차","campaign_name":"260126_신메뉴 1차","start":"2026-01-26","end":"2026-02-01","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1844827189986338","platform":"tiktok","name":"20251002_브랜딩_엄마","campaign_name":"251002_브랜딩_엄마","start":"2025-10-02","end":"2025-10-06","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]},{"key":"tiktok:1844761944708209","platform":"tiktok","name":"20251002_브랜딩_명화","campaign_name":"251001_브랜딩_명화","start":"2025-10-01","end":"2025-10-06","status":"PAUSED","objective":"REACH","optimization_goal":"REACH","bid_strategy":"CPMV","budget":null,"budget_period":null,"age_min":25,"age_max":100,"placements":["tiktok"]}];
+  const DAILY = [["meta:120232487907070203","2025-09-06",89548,83810,75542,5199,161],["meta:120232487907070203","2025-09-07",4696,4489,4282,360,9],["meta:120232487907070203","2025-09-08",83431,74961,67663,4384,122],["meta:120232487907070203","2025-09-09",81577,72073,67220,4896,141],["meta:120232487907070203","2025-09-10",80947,67319,63715,4660,95],["meta:120232487907070203","2025-09-11",81369,63666,61728,4425,71],["meta:120232487907070203","2025-09-12",81972,64628,61736,4996,86],["meta:120232487907070203","2025-09-13",82603,68387,63139,4520,113],["meta:120232487907070203","2025-09-14",76303,63657,60040,4590,113],["meta:120232487907070203","2025-09-15",70508,60045,55743,4042,88],["meta:120232487907070203","2025-09-16",13826,11697,11089,812,10],["meta:120233728535580203","2025-10-01",61163,47422,46545,1190,28],["meta:120233728535580203","2025-10-02",73036,58334,57625,1368,32],["meta:120233856510500203","2025-10-02",37244,28510,27139,1072,16],["meta:120233728535580203","2025-10-03",68469,55838,55378,1217,37],["meta:120233856510500203","2025-10-03",46514,36470,34740,1422,21],["meta:120233728535580203","2025-10-04",62516,52649,51386,1210,35],["meta:120233856510500203","2025-10-04",46784,38415,36507,1612,23],["meta:120233728535580203","2025-10-05",54205,47292,45521,1202,34],["meta:120233856510500203","2025-10-05",38795,33343,31093,1624,25],["meta:120236167903760203","2025-11-04",67072,46443,44610,4123,5],["meta:120236167903760203","2025-11-05",133681,88677,84480,9002,6],["meta:120236167903760203","2025-11-06",134888,87511,83213,10486,7],["meta:120236167903760203","2025-11-07",136525,86373,83398,10814,10],["meta:120236167903760203","2025-11-08",140405,90266,87599,12836,19],["meta:120236167903760203","2025-11-09",152277,99457,96887,13829,23],["meta:120236167903760203","2025-11-10",142115,93365,88917,12930,12],["meta:120236167903760203","2025-11-11",63428,41248,38330,5861,9],["meta:120240217289450203","2026-01-26",19688,17672,17248,1087,7],["meta:120240217427740203","2026-01-26",1946,2094,1976,326,5],["meta:120240217427750203","2026-01-26",4036,4203,3957,676,3],["meta:120240217289450203","2026-01-27",52894,44867,43220,2025,16],["meta:120240217427740203","2026-01-27",1856,1612,1558,109,3],["meta:120240217427750203","2026-01-27",6636,5688,5498,545,0],["meta:120240217289450203","2026-01-28",55135,46388,41721,2575,28],["meta:120240217427740203","2026-01-28",874,742,698,23,0],["meta:120240217427750203","2026-01-28",4461,3804,3565,345,7],["meta:120240217289450203","2026-01-29",48711,39385,36917,2002,31],["meta:120240217427740203","2026-01-29",1530,1228,1192,43,0],["meta:120240217427750203","2026-01-29",10245,8274,7926,779,8],["meta:120240217289450203","2026-01-30",38672,31482,29507,2731,40],["meta:120240217427740203","2026-01-30",10981,8673,8522,343,10],["meta:120240217427750203","2026-01-30",12817,10637,10062,1425,11],["meta:120240217289450203","2026-01-31",36871,29506,27933,1699,20],["meta:120240217427740203","2026-01-31",20855,16678,16006,730,16],["meta:120240217427750203","2026-01-31",8135,6524,6153,582,4],["meta:120240217289450203","2026-02-01",35297,30123,28751,1815,24],["meta:120240217427740203","2026-02-01",22245,18906,17594,831,19],["meta:120240217427750203","2026-02-01",6097,5247,4969,466,2],["meta:120240444641820203","2026-02-02",1173,1349,1165,286,0],["meta:120240444749940203","2026-02-02",846,1152,1035,327,10],["meta:120240444833250203","2026-02-02",8724,7715,7471,416,0],["meta:120240444854270203","2026-02-02",28235,27129,26787,618,21],["meta:120240444641820203","2026-02-03",456,441,437,7,0],["meta:120240444749940203","2026-02-03",668,697,630,152,3],["meta:120240444833250203","2026-02-03",25704,24164,22936,2347,6],["meta:120240444854270203","2026-02-03",49209,45913,44058,1314,41],["meta:120240444749940203","2026-02-04",133,129,126,15,1],["meta:120240444833250203","2026-02-04",33363,28857,27273,672,2],["meta:120240444854270203","2026-02-04",38679,35763,32513,639,36],["meta:120240444749940203","2026-02-05",707,646,638,89,5],["meta:120240444833250203","2026-02-05",36965,32249,30337,775,1],["meta:120240444854270203","2026-02-05",44936,39590,37563,820,35],["meta:120240444749940203","2026-02-06",1711,1509,1469,197,7],["meta:120240444833250203","2026-02-06",35730,29867,28138,670,4],["meta:120240444854270203","2026-02-06",49317,41920,39978,901,31],["meta:120240444749940203","2026-02-07",1750,1584,1477,159,4],["meta:120240444833250203","2026-02-07",30562,26738,25474,634,6],["meta:120240444854270203","2026-02-07",40014,35810,34275,1113,31],["meta:120240444749940203","2026-02-08",2124,1969,1817,252,8],["meta:120240444833250203","2026-02-08",29145,26141,24952,641,1],["meta:120240444854270203","2026-02-08",39737,36096,34589,801,41],["meta:120243455854650203","2026-04-09",44370,40045,39579,2195,40],["meta:120243455854650203","2026-04-10",81498,71393,70760,4032,119],["meta:120243455854650203","2026-04-11",86402,75819,75134,4275,228],["meta:120243455854650203","2026-04-12",105746,95519,94781,4878,260],["meta:120243455854650203","2026-04-13",91343,83743,82801,4109,586],["meta:120243455854650203","2026-04-14",51089,46172,45653,2051,467],["meta:120246343370710203","2026-05-18",17887,14294,13999,401,0],["meta:120246345567270203","2026-05-18",10888,722,689,73,8],["meta:120246343370710203","2026-05-19",32697,27754,27319,398,2],["meta:120246345567270203","2026-05-19",26978,953,913,198,22],["meta:120246343370710203","2026-05-20",34080,28934,28515,428,1],["meta:120246345567270203","2026-05-20",30571,1125,1075,254,22],["meta:120246343370710203","2026-05-21",33624,28264,27877,404,5],["meta:120246343370710203","2026-05-22",33750,26625,26209,400,7],["meta:120246343370710203","2026-05-23",36524,27829,27337,466,8],["meta:120246343370710203","2026-05-24",35452,28353,27794,429,1],["meta:120247698816380203","2026-06-01",459,372,361,57,0],["meta:120247698382770203","2026-06-02",29675,2629,2565,439,7],["meta:120247698816380203","2026-06-02",30463,22327,21996,1258,5],["meta:120247698382770203","2026-06-03",38275,2589,2500,549,13],["meta:120247698816380203","2026-06-03",39686,29978,29480,1524,7],["meta:120247698816380203","2026-06-04",38609,30588,29682,2198,14],["meta:120247698816380203","2026-06-05",38411,29832,29021,1962,14],["meta:120247698816380203","2026-06-06",41257,31794,31011,1804,7],["meta:120247698816380203","2026-06-07",35404,29156,27848,2490,20],["meta:120250417757340203","2026-07-03",14943,14758,13444,1603,15],["meta:120250417757340203","2026-07-04",28782,28526,26603,2932,22],["meta:120250417757340203","2026-07-05",36937,41516,37482,4632,30],["meta:120250417757340203","2026-07-06",30478,34505,31120,3778,21],["meta:120250417757340203","2026-07-07",30109,34109,30082,4107,29],["meta:120250417757340203","2026-07-08",29002,31330,27906,3775,19],["meta:120250417757340203","2026-07-09",32267,32865,29453,4122,22],["meta:120250803602500203","2026-07-16",13191,15098,13897,1768,66],["meta:120250803602500203","2026-07-17",30606,32907,29639,2587,114],["meta:120250803602500203","2026-07-18",30071,34534,31696,2607,98],["meta:120250803602500203","2026-07-19",35759,43769,38266,3639,142],["meta:120250803602500203","2026-07-20",30638,38604,34680,3363,141],["meta:120250803602500203","2026-07-21",29478,34515,31081,2877,129],["meta:120250803602500203","2026-07-22",31143,33270,30401,2494,147],["meta:120251204442580203","2026-08-03",17014,15938,15693,560,7],["meta:120251204442580203","2026-08-04",29218,26777,26456,680,18],["meta:120251204442580203","2026-08-05",29011,26269,25894,684,10],["meta:120251204442580203","2026-08-06",29479,26389,25971,584,10],["meta:120251204442580203","2026-08-07",31800,28057,27672,643,14],["meta:120251204442580203","2026-08-08",35455,31340,30731,810,11],["meta:120251204442580203","2026-08-09",31946,28710,28234,768,10],["meta:120251424785890203","2026-08-10",868,366,352,283,10],["meta:120251424785890203","2026-08-11",9673,2886,2763,1761,72],["meta:120251424785890203","2026-08-12",6666,2306,2199,1445,67],["meta:120251424785890203","2026-08-13",6293,1980,1889,1209,63],["meta:120251424785890203","2026-08-14",6716,1894,1815,1187,58],["meta:120251424785890203","2026-08-15",7221,2264,2179,1313,44],["meta:120251424785890203","2026-08-16",6731,2245,2169,1293,59],["meta:120251729011560203","2026-08-24",17150,6957,6826,4002,325],["meta:120251729011560203","2026-08-25",30698,12195,11879,7142,620],["meta:120251729011560203","2026-08-26",28324,11252,11057,6255,462],["meta:120251729011560203","2026-08-27",28478,10902,10683,6176,424],["meta:120251729011560203","2026-08-28",32832,11469,11242,6549,450],["meta:120251729011560203","2026-08-29",34842,12172,11964,6918,552],["meta:120251729011560203","2026-08-30",31566,11058,10810,6388,539],["meta:120251813215570203","2026-08-31",13411,4427,4306,2186,375],["meta:120251813215570203","2026-09-01",33819,10160,9889,5480,1009],["meta:120251813215570203","2026-09-02",30083,9456,9082,5206,895],["meta:120251813215570203","2026-09-03",28192,8828,8483,4719,815],["meta:120251813215570203","2026-09-04",29557,8126,7877,4661,1002],["meta:120251813215570203","2026-09-05",34685,8867,8670,5423,1306],["meta:120251813215570203","2026-09-06",31635,8454,8304,5135,1252],["meta:120251911784950203","2026-09-07",12491,2971,2927,1197,207],["meta:120251911784950203","2026-09-08",27437,5984,5843,2440,453],["meta:120251911784950203","2026-09-09",30346,5416,5306,2717,516],["meta:120251911784950203","2026-09-10",43708,6966,6839,3357,630],["meta:120251911784950203","2026-09-11",29051,5014,4864,2429,401],["meta:120251911784950203","2026-09-12",46221,7812,7644,3676,656],["meta:120251911784950203","2026-09-13",34706,5888,5809,2653,518],["meta:120252130958900203","2026-09-23",84882,22154,21628,16668,937],["meta:120252130958900203","2026-09-24",103086,31764,31396,23185,1090],["meta:120252130958900203","2026-09-25",83201,29284,28936,20085,792],["meta:120252130958900203","2026-09-26",86188,30419,29946,22118,869],["tiktok:1844761944708209","2025-10-01",111962,68364,67826,3292,239],["tiktok:1844761944708209","2025-10-02",60384,41620,41283,1912,182],["tiktok:1844761944708209","2025-10-03",60256,57890,56435,2843,305],["tiktok:1844761944708209","2025-10-04",59360,53735,52168,2563,320],["tiktok:1844761944708209","2025-10-05",60341,52037,50026,2879,470],["tiktok:1844761944708209","2025-10-06",10476,9454,9078,589,108],["tiktok:1844827189986338","2025-10-02",50951,36482,36151,721,99],["tiktok:1844827189986338","2025-10-03",49841,47096,46065,1091,198],["tiktok:1844827189986338","2025-10-04",49208,44536,43386,968,156],["tiktok:1844827189986338","2025-10-05",50242,43217,41676,1333,309],["tiktok:1844827189986338","2025-10-06",9183,8218,7909,297,66],["tiktok:1855364380125730","2026-01-26",6530,12605,12011,425,94],["tiktok:1855364380125730","2026-01-27",20472,37612,34765,1444,346],["tiktok:1855364516188242","2026-01-26",7353,13940,13344,695,72],["tiktok:1855364516188242","2026-01-27",21034,38556,37916,1970,158],["tiktok:1855447910509745","2026-01-27",13157,26377,26130,1087,92],["tiktok:1855364380125730","2026-01-28",21385,43033,39426,1599,459],["tiktok:1855364380125730","2026-01-29",16295,42217,39066,1345,363],["tiktok:1855364380125730","2026-01-30",20081,40637,36113,1599,434],["tiktok:1855364380125730","2026-01-31",36885,72828,70350,1971,471],["tiktok:1855364380125730","2026-02-01",67102,126895,124593,4715,1012],["tiktok:1855364516188242","2026-01-28",21345,43072,42442,2321,192],["tiktok:1855364516188242","2026-01-29",20190,51241,50548,2124,159],["tiktok:1855364516188242","2026-01-30",22460,44899,44085,2224,194],["tiktok:1855364516188242","2026-01-31",28566,57743,57053,2563,192],["tiktok:1855364516188242","2026-02-01",42,84,84,9,1],["tiktok:1855447910509745","2026-01-28",25590,50454,49871,1978,197],["tiktok:1855447910509745","2026-01-29",27576,66187,65441,2245,188],["tiktok:1855447910509745","2026-01-30",23858,47701,47234,1826,138],["tiktok:1855447910509745","2026-01-31",77,146,141,8,2],["tiktok:1855447910509745","2026-02-01",2,5,4,0,0],["tiktok:1855994207108433","2026-02-02",7224,16336,15503,425,32],["tiktok:1855994207108433","2026-02-03",18717,40761,40318,937,61],["tiktok:1855994207108433","2026-02-04",18610,47052,46626,1018,70],["tiktok:1855994207108433","2026-02-05",22080,50375,49977,927,61],["tiktok:1855994207108433","2026-02-06",26491,53998,53540,882,59],["tiktok:1855994207108433","2026-02-07",23305,52179,51756,875,57],["tiktok:1855994207108433","2026-02-08",24111,54499,54053,992,80],["tiktok:1855994633732210","2026-02-02",7977,20354,19789,1302,68],["tiktok:1855994633732210","2026-02-03",18629,41539,41094,2047,89],["tiktok:1855994633732210","2026-02-04",17226,44797,44405,1918,92],["tiktok:1855994633732210","2026-02-05",24754,56236,55770,2008,92],["tiktok:1855994633732210","2026-02-06",28268,56864,56388,1703,66],["tiktok:1855994633732210","2026-02-07",26165,58053,57601,1818,78],["tiktok:1855994633732210","2026-02-08",25330,56223,55800,1812,85],["tiktok:1855995040674961","2026-02-02",5901,13130,13018,1421,379],["tiktok:1855995040674961","2026-02-03",18924,41532,41190,4316,1192],["tiktok:1855995040674961","2026-02-04",18090,46645,46273,4151,1153],["tiktok:1855995040674961","2026-02-05",16103,38384,38116,3243,825],["tiktok:1855995040674961","2026-02-06",19690,40494,40228,3210,825],["tiktok:1855995040674961","2026-02-07",18790,42001,41671,3546,897],["tiktok:1855995040674961","2026-02-08",20045,44786,44462,3790,1012],["tiktok:1855995181196513","2026-02-02",10633,22638,22508,564,105],["tiktok:1855995181196513","2026-02-03",20328,43754,43499,1089,223],["tiktok:1855995181196513","2026-02-04",22902,56599,56190,1535,294],["tiktok:1855995181196513","2026-02-05",7497,19670,19543,563,135],["tiktok:1855995181196513","2026-02-06",6000,12680,12559,298,65],["tiktok:1855995181196513","2026-02-07",13574,29571,29332,693,137],["tiktok:1855995181196513","2026-02-08",12636,28247,28023,732,152],["tiktok:1861972737537634","2026-04-09",50405,70237,69680,2784,1167],["tiktok:1861972737537634","2026-04-10",49970,75810,75165,3636,1606],["tiktok:1861972737537634","2026-04-11",49625,95805,95201,3869,1587],["tiktok:1861972737537634","2026-04-12",50148,128930,128253,4706,1956],["tiktok:1861972737537634","2026-04-13",50228,122861,122055,4059,1615],["tiktok:1861972737537634","2026-04-14",32128,69938,69470,2754,1119],["tiktok:1865513031475570","2026-05-18",7222,10087,9973,170,13],["tiktok:1865513031475570","2026-05-19",25558,50879,50242,1197,93],["tiktok:1865513031475570","2026-05-20",24018,50898,50339,884,72],["tiktok:1865513031475570","2026-05-21",22517,46666,46221,662,45],["tiktok:1865513031475570","2026-05-22",22948,49742,49205,662,48],["tiktok:1865513031475570","2026-05-23",23152,60035,59087,569,40],["tiktok:1865513031475570","2026-05-24",24488,65446,64269,680,43],["tiktok:1866777610628433","2026-06-01",0,19,19,0,0],["tiktok:1866777610628433","2026-06-02",17569,40083,39729,1105,36],["tiktok:1866777610628433","2026-06-03",25062,56805,56144,1517,52],["tiktok:1866777610628433","2026-06-04",27187,50152,49597,1537,53],["tiktok:1866777610628433","2026-06-05",26955,43763,43326,1791,51],["tiktok:1866777610628433","2026-06-06",26302,44335,43647,1357,35],["tiktok:1866777610628433","2026-06-07",26752,46564,45951,2117,68],["tiktok:1869671060931778","2026-07-03",10032,24700,24482,536,9],["tiktok:1869671060931778","2026-07-04",23257,54208,53488,1348,31],["tiktok:1869671060931778","2026-07-05",23464,58111,57335,1299,38],["tiktok:1869671060931778","2026-07-06",23950,53799,53139,1276,30],["tiktok:1869671060931778","2026-07-07",23023,44765,44099,1109,28],["tiktok:1869671060931778","2026-07-08",23071,41372,40497,1050,27],["tiktok:1869671060931778","2026-07-09",22899,37940,37331,1061,28],["tiktok:1870852034654418","2026-07-16",7370,17711,17512,227,47],["tiktok:1870852034654418","2026-07-17",24047,53920,53351,737,128],["tiktok:1870852034654418","2026-07-18",27174,62528,61778,915,157],["tiktok:1870852034654418","2026-07-19",24894,54729,53441,917,191],["tiktok:1870852034654418","2026-07-20",25813,55175,52574,1114,311],["tiktok:1870852034654418","2026-07-21",20420,48012,46968,700,132],["tiktok:1870852034654418","2026-07-22",19808,42868,41693,631,132],["tiktok:1872478181022978","2026-08-03",10411,39590,39320,947,67],["tiktok:1872478181022978","2026-08-04",22931,85439,84684,2814,255],["tiktok:1872478181022978","2026-08-05",23589,67051,66001,1937,195],["tiktok:1872478181022978","2026-08-06",23798,64651,63361,1758,147],["tiktok:1872478181022978","2026-08-07",23719,61269,60013,1872,167],["tiktok:1872478181022978","2026-08-08",22983,62323,61059,1727,159],["tiktok:1872478181022978","2026-08-09",22513,55532,54330,1478,119],["tiktok:1873117669936258","2026-08-11",23568,48497,47967,1881,104],["tiktok:1873117669936258","2026-08-12",26794,44550,43611,1811,109],["tiktok:1873117669936258","2026-08-13",25278,56534,55023,1775,106],["tiktok:1873117669936258","2026-08-14",26452,31056,29299,907,46],["tiktok:1873117669936258","2026-08-15",25210,30859,28931,1341,70],["tiktok:1873117669936258","2026-08-16",22587,30264,28300,898,54],["tiktok:1874382568955426","2026-08-24",11652,20954,19231,1032,72],["tiktok:1874382568955426","2026-08-25",23952,56625,54221,3981,267],["tiktok:1874382568955426","2026-08-26",22406,49731,46830,2219,131],["tiktok:1874382568955426","2026-08-27",24380,46070,43639,2848,213],["tiktok:1874382568955426","2026-08-28",22987,28436,26147,1209,94],["tiktok:1874382568955426","2026-08-29",23163,45209,43084,3387,249],["tiktok:1874382568955426","2026-08-30",21460,34731,32576,2221,175],["tiktok:1875023405365442","2026-08-31",11258,13150,11815,464,70],["tiktok:1875023405365442","2026-09-01",26843,31328,29274,1306,174],["tiktok:1875023405365442","2026-09-02",38206,48145,45896,2469,358],["tiktok:1875023405365442","2026-09-03",37789,44769,42628,2191,286],["tiktok:1875023405365442","2026-09-04",36895,47782,45651,2319,298],["tiktok:1875023405365442","2026-09-05",37325,50299,48099,2104,251],["tiktok:1875023405365442","2026-09-06",34523,50715,48599,2116,280],["tiktok:1875658555574402","2026-09-07",9716,13414,12354,204,22],["tiktok:1875658555574402","2026-09-08",39447,45164,42074,822,76],["tiktok:1875658555574402","2026-09-09",41512,41644,38627,803,69],["tiktok:1875658555574402","2026-09-10",40805,39482,36588,731,54],["tiktok:1875658555574402","2026-09-11",41022,37485,34623,940,75],["tiktok:1875658555574402","2026-09-12",40198,37559,34660,835,73],["tiktok:1875658555574402","2026-09-13",37300,36447,33551,728,81],["tiktok:1877013481906498","2026-09-23",100373,107587,103398,11093,975],["tiktok:1877013481906498","2026-09-24",100284,129007,125234,17128,1903],["tiktok:1877013481906498","2026-09-25",99876,136756,133060,12866,1187],["tiktok:1877013481906498","2026-09-26",99467,119937,116179,12768,1324]];
+  const UPDATED_AT = "2026-09-30 08:42 KST";
 
-  const OBJ_LABEL = { OUTCOME_ENGAGEMENT: "참여", OUTCOME_AWARENESS: "인지도", OUTCOME_TRAFFIC: "트래픽" };
   const GOAL_LABEL = {
-    THRUPLAY: "동영상 재생(ThruPlay)",
-    IMPRESSIONS: "노출 최대화",
-    REACH: "도달 최대화",
-    PROFILE_VISIT: "프로필 방문",
-    LANDING_PAGE_VIEWS: "랜딩페이지 조회",
-    LINK_CLICKS: "링크 클릭",
+    THRUPLAY: "동영상 재생(ThruPlay)", IMPRESSIONS: "노출 최대화", REACH: "도달 최대화",
+    PROFILE_VISIT: "프로필 방문", LANDING_PAGE_VIEWS: "랜딩페이지 조회", LINK_CLICKS: "링크 클릭",
+    POST_ENGAGEMENT: "게시물 참여", VIDEO_VIEW: "동영상 조회", ENGAGED_VIEW: "6초 조회", CLICK: "클릭",
   };
   const BID_LABEL = {
-    LOWEST_COST_WITHOUT_CAP: "최저비용(한도없음)",
-    LOWEST_COST_WITH_BID_CAP: "최저비용(입찰상한)",
-    COST_CAP: "비용상한",
-    CPMV: "노출당 입찰(CPMV)",
-    CPM: "노출당 입찰(CPM)",
-    CPC: "클릭당 입찰(CPC)",
+    LOWEST_COST_WITHOUT_CAP: "최저비용(한도없음)", LOWEST_COST_WITH_BID_CAP: "입찰상한", COST_CAP: "비용상한",
+    CPMV: "노출당 입찰(CPMV)", CPM: "CPM 입찰", CPC: "CPC 입찰", CPV: "CPV 입찰",
   };
-  const PLATFORM_LABEL = { instagram: "인스타그램", facebook: "페이스북", audience_network: "오디언스 네트워크", messenger: "메신저", tiktok: "틱톡" };
+  const PLACEMENT_LABEL = { instagram: "인스타그램", facebook: "페이스북", audience_network: "오디언스 네트워크", messenger: "메신저", tiktok: "틱톡" };
+  const PLATFORM_NAME = { meta: "Meta", tiktok: "TikTok" };
+  const TP_LABEL = { meta: "3초", tiktok: "6초" };
 
-  function parseDate(name) {
-    if (!name) return null;
-    let m = name.match(/^(\d{8})/);
-    if (m) { const s = m[1]; return `20${s.slice(2,4)}-${s.slice(4,6)}-${s.slice(6,8)}`; }
-    m = name.match(/^(\d{6})/);
-    if (m) { const s = m[1]; return `20${s.slice(0,2)}-${s.slice(2,4)}-${s.slice(4,6)}`; }
-    return null;
+  const fmtInt = n => Math.round(n || 0).toLocaleString("ko-KR");
+  const fmtWon = n => "₩" + Math.round(n || 0).toLocaleString("ko-KR");
+  const fmtShortWon = n => n >= 10000 ? "₩" + (n / 10000).toFixed(n >= 1000000 ? 0 : 1) + "만" : fmtWon(n);
+  const fmtShortInt = n => n >= 10000 ? (n / 10000).toFixed(n >= 1000000 ? 0 : 1) + "만" : fmtInt(n);
+  const fmtCpv = n => (n === null || n === undefined || !isFinite(n)) ? "—" : "₩" + n.toFixed(1);
+  const fmtPct = n => (n === null || n === undefined || !isFinite(n)) ? "—" : n.toFixed(1) + "%";
+  const monthLabel = m => m === "all" ? "전체 기간" : `${m.slice(0, 4)}년 ${+m.slice(5, 7)}월`;
+  const shortDate = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : "?";
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const cleanName = n => {
+    const raw = String(n || "").trim();
+    return raw.replace(/^\d{6,8}[_\s-]*/, "").trim() || raw;
+  };
+
+  // ---------- model ----------
+  const DAYS = DAILY.map(([key, day, spend, imp, plays, tp, comp]) =>
+    ({ key, day, month: day.slice(0, 7), platform: key.split(":")[0], spend, imp, plays, tp, comp }));
+
+  function sum(rows) {
+    const t = { spend: 0, imp: 0, plays: 0, tp: 0, comp: 0 };
+    rows.forEach(r => { t.spend += r.spend; t.imp += r.imp; t.plays += r.plays; t.tp += r.tp; t.comp += r.comp; });
+    t.cpv = t.plays ? t.spend / t.plays : null;
+    t.tpRate = t.plays ? t.tp / t.plays * 100 : null;
+    return t;
   }
+  const inScope = (d, scope) => scope === "all" || d.month === scope;
 
-  let ROWS = CAMPAIGNS.map(r => ({ ...r, date: r.date || parseDate(r.adset_name) || parseDate(r.campaign_name) }))
-    .sort((a, b) => (a.date || "9999") < (b.date || "9999") ? -1 : 1);
+  SETTINGS.forEach(s => {
+    s.days = DAYS.filter(d => d.key === s.key);
+    const dates = s.days.map(d => d.day).sort();
+    s.first = dates[0];
+    s.last = dates[dates.length - 1];
+    // Group by scheduled start; fall back to first spend day if the schedule is missing or later.
+    s.period = s.start && s.first && s.start <= s.first ? s.start : (s.first || s.start);
+    s.total = sum(s.days);
+  });
 
-  // rank-based efficiency tier: cheapest third = good, priciest third = bad, middle = neutral.
-  (function assignTiers() {
-    ROWS.forEach(r => { r.tier = "mid"; });
-    const byCpv = ROWS.filter(r => r.cpv !== null && r.cpv !== undefined).sort((a, b) => a.cpv - b.cpv);
-    const n = byCpv.length;
-    const goodCut = Math.max(1, Math.floor(n / 3));
-    const badCut = Math.max(goodCut, n - Math.floor(n / 3));
-    byCpv.forEach((r, i) => { r.tier = i < goodCut ? "good" : i >= badCut ? "bad" : "mid"; });
-    // n above is now the ranked (non-null) count, recomputed from byCpv.length already
-  })();
-
-  const fmtInt = n => Math.round(n).toLocaleString("ko-KR");
-  const fmtWon = n => "₩" + Math.round(n).toLocaleString("ko-KR");
-  const fmtWonShort = n => n >= 10000 ? "₩" + (n/10000).toFixed(0) + "만" : fmtWon(n);
-  const fmtCPV = n => (n === null || n === undefined || !isFinite(n) || isNaN(n)) ? "—" : "₩" + n.toFixed(1) + "/회";
-  const fmtPct = n => n.toFixed(1) + "%";
-  const effLabel = tier => tier === "good" ? "효율 좋음" : tier === "bad" ? "효율 나쁨" : "효율 보통";
-  const ageLabel = r => (r.age_min && r.age_max) ? `${r.age_min}~${r.age_max}세` : "전연령";
-  const platformLabel = r => (r.platforms && r.platforms.length) ? r.platforms.map(p => PLATFORM_LABEL[p] || p).join("+") : "-";
-  const budgetLabel = r => r.budget ? `${fmtWon(r.budget)}/${r.budget_period}` : "정보 없음";
-
-  document.getElementById("updatedAt").textContent = `데이터 기준 ${UPDATED_AT}`;
-
-  // ---- tiles ----
-  const totalSpend = ROWS.reduce((a,c)=>a+c.spend,0);
-  const totalViews = ROWS.reduce((a,c)=>a+c.views,0);
-  const totalCompletion = ROWS.reduce((a,c)=>a+c.completion_views,0);
-  const avgCPV = totalSpend / totalViews;
-  const avgCompletionRate = totalCompletion / totalViews * 100;
-
-  document.getElementById("tiles").innerHTML = [
-    { label: "세팅(광고그룹) 수", value: `${ROWS.length}개` },
-    { label: "누적 통합 광고비", value: fmtWonShort(totalSpend) },
-    { label: "누적 통합 조회수", value: fmtInt(totalViews) },
-    { label: "누적 완료조회수", value: fmtInt(totalCompletion) },
-    { label: "평균 완료율", value: fmtPct(avgCompletionRate) },
-    { label: "평균 통합 CPV", value: fmtCPV(avgCPV), accent: true },
-  ].map(t => `
-    <div class="tile ${t.accent ? "accent" : ""}">
-      <div class="tile-label">${t.label}</div>
-      <div class="tile-value">${t.value}</div>
-    </div>`).join("");
-
-  // ---- grouping helpers: date is the shared start-day both Meta and TikTok
-  // launch on for a given period, so it's the join key across platforms. ----
-  function aggregateRows(rows) {
-    const spend = rows.reduce((a,r)=>a+r.spend, 0);
-    const views = rows.reduce((a,r)=>a+r.views, 0);
-    return { spend, views, cpv: views ? spend / views : null, count: rows.length };
-  }
-  function groupBy(rows, keyFn) {
+  // A campaign period = every Meta/TikTok setting that started on the same day.
+  const PERIODS = [];
+  (function buildPeriods() {
     const map = new Map();
-    rows.forEach(r => {
-      const k = keyFn(r);
-      if (!map.has(k)) map.set(k, []);
-      map.get(k).push(r);
+    SETTINGS.forEach(s => {
+      if (!s.days.length) return;
+      if (!map.has(s.period)) map.set(s.period, { start: s.period, settings: [] });
+      map.get(s.period).settings.push(s);
     });
-    return map;
-  }
-  function platformCell(rows, platform, label) {
-    const sub = rows.filter(r => r.platform === platform);
-    if (!sub.length) return `<span class="platform-cell empty">${platform === "tiktok" ? "연동 전" : "—"}</span>`;
-    const agg = aggregateRows(sub);
-    return `<span class="platform-cell ${platform}"><span class="dot"></span>${fmtWonShort(agg.spend)} · ${fmtInt(agg.views)}회</span>`;
-  }
-
-  // ---- monthly summary ----
-  (function renderMonths() {
-    const byMonth = groupBy(ROWS, r => r.date ? r.date.slice(0,7) : "날짜 미상");
-    const months = [...byMonth.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
-    document.getElementById("monthRows").innerHTML = months.map(([month, rows]) => {
-      const agg = aggregateRows(rows);
-      const label = month === "날짜 미상" ? month : `${month.slice(0,4)}년 ${+month.slice(5,7)}월`;
-      return `
-        <tr>
-          <td>${label}</td>
-          <td>${rows.length}개</td>
-          <td>${fmtWon(agg.spend)}</td>
-          <td>${fmtInt(agg.views)}</td>
-          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
-        </tr>`;
-    }).join("");
+    map.forEach(p => {
+      p.days = p.settings.flatMap(s => s.days);
+      p.end = p.days.map(d => d.day).sort().pop();
+      p.months = [...new Set(p.days.map(d => d.month))];
+      p.name = [...new Set(p.settings.map(s => cleanName(s.campaign_name || s.name)))].join(" / ");
+      p.total = sum(p.days);
+      PERIODS.push(p);
+    });
+    PERIODS.sort((a, b) => a.start < b.start ? 1 : -1);
   })();
 
-  // ---- period table (expand to see individual settings) ----
-  function summarize(r) {
-    const goal = GOAL_LABEL[r.optimization_goal] || r.optimization_goal || "목표 미상";
-    return `${budgetLabel(r)} 예산 · <b>${goal}</b> 최적화 · ${ageLabel(r)} · ${platformLabel(r)} 타겟팅으로 집행. `
-      + `CPV <b>${fmtCPV(r.cpv)}</b>(${effLabel(r.tier)}), 완료율 <b>${fmtPct(r.completion_rate)}</b>.`;
+  function assignTiers(items) {
+    items.forEach(x => x.tier = "mid");
+    const ranked = items.filter(x => x.total.cpv !== null).sort((a, b) => a.total.cpv - b.total.cpv);
+    const n = ranked.length;
+    if (n < 3) return;
+    const cut = Math.floor(n / 3);
+    ranked.forEach((x, i) => { x.tier = i < cut ? "good" : i >= n - cut ? "bad" : "mid"; });
   }
-  function cardHTML(r) {
+  assignTiers(PERIODS);
+  ["meta", "tiktok"].forEach(p => assignTiers(SETTINGS.filter(s => s.platform === p && s.days.length)));
+
+  const MONTHS = [...new Set(DAYS.map(d => d.month))].sort().reverse();
+  let scope = MONTHS[0] || "all";
+  const openPeriods = new Set();
+  const pill = (cpv, tier) => `<span class="cpv-pill ${tier === "good" ? "good" : tier === "bad" ? "bad" : ""}">${tier === "good" ? '<span class="arrow">▼</span>' : tier === "bad" ? '<span class="arrow">▲</span>' : ""}${fmtCpv(cpv)}</span>`;
+  const platCell = (rows, platform) => {
+    const t = sum(rows.filter(r => r.platform === platform));
+    if (!t.spend && !t.plays) return `<span class="plat empty">—</span>`;
+    return `<span class="plat"><i class="dot ${platform}"></i>${fmtShortWon(t.spend)} · ${fmtShortInt(t.plays)}회</span>`;
+  };
+  const tpCell = t => `<td class="tp">${fmtInt(t.tp)}<span class="rate">${fmtPct(t.tpRate)}</span></td>`;
+
+  // ---------- render ----------
+  function renderScope() {
+    const opts = [...MONTHS, "all"];
+    document.getElementById("scope").innerHTML = `<span class="scope-label">보기</span>` +
+      opts.map(m => `<button class="pill" data-scope="${m}" aria-pressed="${m === scope}">${monthLabel(m)}</button>`).join("");
+  }
+
+  function renderTiles() {
+    const rows = DAYS.filter(d => inScope(d, scope));
+    const t = sum(rows);
+    const m = sum(rows.filter(r => r.platform === "meta"));
+    const k = sum(rows.filter(r => r.platform === "tiktok"));
+    const periods = PERIODS.filter(p => p.days.some(d => inScope(d, scope)));
+    const split = (fm, fk) => `<div class="tile-split"><span><i class="dot meta"></i>Meta ${fm}</span><span><i class="dot tiktok"></i>TikTok ${fk}</span></div>`;
+    const tiles = [
+      { label: "광고비", value: fmtWon(t.spend), split: split(fmtWon(m.spend), fmtWon(k.spend)) },
+      { label: "조회수", value: fmtInt(t.plays), split: split(fmtInt(m.plays) + "회", fmtInt(k.plays) + "회") },
+      { label: "트루플레이 <small>Meta 3초 · TikTok 6초</small>", value: fmtInt(t.tp), split: split(fmtInt(m.tp) + "회", fmtInt(k.tp) + "회") },
+      { label: "조회당 비용", value: fmtCpv(t.cpv), accent: true, split: split(fmtCpv(m.cpv), fmtCpv(k.cpv)) },
+      { label: "트루플레이율 <small>÷ 조회수</small>", value: fmtPct(t.tpRate), split: split(fmtPct(m.tpRate), fmtPct(k.tpRate)) },
+      { label: "집행 캠페인", value: `${periods.length}건`, split: `<div class="tile-split"><span>세팅 ${new Set(rows.map(r => r.key)).size}개 (광고그룹 기준)</span></div>` },
+    ];
+    document.getElementById("tiles").innerHTML = tiles.map(x => `
+      <div class="tile ${x.accent ? "accent" : ""}">
+        <div class="tile-label">${x.label}</div>
+        <div class="tile-value">${x.value}</div>
+        ${x.split}
+      </div>`).join("");
+  }
+
+  function settingSummary(s) {
+    const peers = SETTINGS.filter(o => o.platform === s.platform && o.total.cpv !== null);
+    const avg = sum(peers.flatMap(o => o.days)).cpv;
+    const goal = GOAL_LABEL[s.optimization_goal] || s.optimization_goal || "목표 미상";
+    if (s.total.cpv === null) return `${goal} 세팅인데 조회수가 거의 안 잡힘. 조회 목적이면 목표를 바꿀 것.`;
+    const diff = avg ? Math.round((s.total.cpv / avg - 1) * 100) : 0;
+    const verdict = s.tier === "good" ? "효율 상위권" : s.tier === "bad" ? "효율 하위권" : "평균권";
+    const cmp = diff === 0 ? "평균과 같음" : diff < 0 ? `평균보다 ${-diff}% 저렴` : `평균보다 ${diff}% 비쌈`;
+    return `${goal} 목표 · 조회당 ${fmtCpv(s.total.cpv)}로 ${PLATFORM_NAME[s.platform]} ${verdict}(${cmp}). 트루플레이율 ${fmtPct(s.total.tpRate)}.`;
+  }
+
+  function settingCard(s) {
+    const rows = s.days.filter(d => inScope(d, scope));
+    const t = sum(rows);
+    const partial = scope !== "all" && s.days.some(d => !inScope(d, scope));
+    const budget = s.budget ? `${fmtWon(s.budget)}/${s.budget_period}` : "정보 없음";
+    const age = s.age_min && s.age_max ? `${s.age_min}~${s.age_max >= 55 ? s.age_max + "+" : s.age_max}세` : "전연령";
+    const place = (s.placements || []).map(p => PLACEMENT_LABEL[p] || p).join("+");
     return `
-    <div class="detail-card ${r.status === "ACTIVE" ? "" : "inactive"}">
-      <div class="detail-top">
-        <div class="detail-title-block">
-          <div class="detail-date">${r.date ? r.date : "날짜 미상"} · <span class="status-chip ${r.status === "ACTIVE" ? "active" : ""}">${r.status === "ACTIVE" ? "진행중" : "중지"}</span></div>
-          <div class="detail-name">${r.adset_name || r.campaign_name}</div>
-          <div class="detail-campaign">캠페인: ${r.campaign_name} · ${OBJ_LABEL[r.objective] || r.objective || "-"}</div>
+      <div class="scard ${s.platform}">
+        <div class="scard-top">
+          <div>
+            <div class="scard-plat"><i class="dot ${s.platform}"></i>${PLATFORM_NAME[s.platform]} · ${s.status === "ACTIVE" ? "진행중" : "종료"}</div>
+            <div class="scard-name">${esc(s.name)}</div>
+            <div class="scard-date">${shortDate(s.first)} ~ ${shortDate(s.last)} 집행${s.end ? ` · 예약 종료 ${shortDate(s.end)}` : ""}</div>
+          </div>
+          ${pill(t.cpv, s.tier)}
         </div>
-        <span class="cpv-pill ${r.tier === "good" ? "good" : r.tier === "bad" ? "bad" : ""}">
-          ${r.tier === "good" ? '<span class="arrow">▼</span>' : r.tier === "bad" ? '<span class="arrow">▲</span>' : ""}${fmtCPV(r.cpv)}
-        </span>
-      </div>
-      <div class="setting-chips">
-        <span class="setting-chip">예산 ${budgetLabel(r)}</span>
-        <span class="setting-chip">${GOAL_LABEL[r.optimization_goal] || r.optimization_goal || "목표 미상"}</span>
-        <span class="setting-chip">${BID_LABEL[r.bid_strategy] || r.bid_strategy || "입찰 기본값"}</span>
-        <span class="setting-chip">${ageLabel(r)}</span>
-        <span class="setting-chip">${platformLabel(r)}</span>
-      </div>
-      <div class="metric-row">
-        <div class="metric"><div class="metric-label">광고비</div><div class="metric-value">${fmtWon(r.spend)}</div></div>
-        <div class="metric"><div class="metric-label">노출수</div><div class="metric-value">${fmtInt(r.impressions)}</div></div>
-        <div class="metric"><div class="metric-label">${r.ad_view_label || "조회"}</div><div class="metric-value">${fmtInt(r.ad_view_count)}</div></div>
-        <div class="metric"><div class="metric-label">완료조회</div><div class="metric-value">${fmtInt(r.completion_views)}</div></div>
-        <div class="metric"><div class="metric-label">완료율</div><div class="metric-value">${fmtPct(r.completion_rate)}</div></div>
-      </div>
-      <div class="detail-summary">${summarize(r)}</div>
-    </div>`;
+        <div class="chips">
+          <span class="chip">예산 ${budget}</span>
+          <span class="chip">${GOAL_LABEL[s.optimization_goal] || s.optimization_goal || "목표 미상"}</span>
+          <span class="chip">${BID_LABEL[s.bid_strategy] || s.bid_strategy || "입찰 기본"}</span>
+          <span class="chip">${age}</span>
+          <span class="chip">${place}</span>
+        </div>
+        <div class="metrics">
+          <div><div class="m-label">광고비</div><div class="m-value">${fmtWon(t.spend)}</div></div>
+          <div><div class="m-label">조회수</div><div class="m-value">${fmtInt(t.plays)}</div></div>
+          <div><div class="m-label">트루플레이 (${TP_LABEL[s.platform]})</div><div class="m-value">${fmtInt(t.tp)}</div></div>
+          <div><div class="m-label">노출</div><div class="m-value">${fmtInt(t.imp)}</div></div>
+          <div><div class="m-label">완료 조회</div><div class="m-value">${fmtInt(t.comp)}</div></div>
+          <div><div class="m-label">트루플레이율</div><div class="m-value">${fmtPct(t.tpRate)}</div></div>
+        </div>
+        <div class="scard-note">
+          ${partial ? `<b>${monthLabel(scope)} 집행분만 표시</b> · 캠페인 전체는 ${fmtWon(s.total.spend)} / ${fmtInt(s.total.plays)}회 / 조회당 ${fmtCpv(s.total.cpv)}<br>` : ""}
+          ${settingSummary(s)}
+        </div>
+      </div>`;
   }
 
-  (function renderPeriods() {
-    const byPeriod = groupBy(ROWS, r => r.date || `설정:${r.adset_id || r.campaign_id}`);
-    const periods = [...byPeriod.entries()].sort((a,b) => b[0] < a[0] ? -1 : 1);
-    const tbody = document.getElementById("periodRows");
-
-    tbody.innerHTML = periods.map(([key, rows], i) => {
-      const agg = aggregateRows(rows);
-      const label = rows[0].date ? rows[0].date : `날짜 미상 · ${rows[0].adset_name || rows[0].campaign_name}`;
+  function renderCampaigns() {
+    const periods = PERIODS.filter(p => p.days.some(d => inScope(d, scope)));
+    document.getElementById("campTitle").textContent = `${monthLabel(scope)} 집행 캠페인`;
+    document.getElementById("campSub").textContent = scope === "all"
+      ? "같은 날 시작한 Meta·TikTok 세팅을 하나의 캠페인으로 묶음 · 행을 누르면 세팅 상세"
+      : "이 달에 광고비가 쓰인 캠페인 · 월을 걸친 캠페인은 이 달 집행분만 합산 · 행을 누르면 세팅 상세";
+    const tbody = document.getElementById("campRows");
+    const foot = document.getElementById("campFoot");
+    if (!periods.length) {
+      tbody.innerHTML = `<tr><td colspan="9" class="l">이 기간에 집행한 캠페인이 없어요.</td></tr>`;
+      foot.innerHTML = "";
+      return;
+    }
+    tbody.innerHTML = periods.map(p => {
+      const rows = p.days.filter(d => inScope(d, scope));
+      const t = sum(rows);
+      const spans = p.months.length > 1;
+      const open = openPeriods.has(p.start);
+      const settings = p.settings.filter(s => s.days.some(d => inScope(d, scope)))
+        .sort((a, b) => a.platform === b.platform ? 0 : a.platform === "meta" ? -1 : 1);
       return `
-        <tr class="period-row" data-target="period-detail-${i}">
+        <tr class="clickable ${open ? "open" : ""}" data-period="${p.start}" tabindex="0" aria-expanded="${open}">
           <td><span class="caret">▸</span></td>
-          <td>${label}</td>
-          <td>${rows.length}개</td>
-          <td>${fmtWon(agg.spend)}</td>
-          <td>${fmtInt(agg.views)}</td>
-          <td class="period-cpv">${fmtCPV(agg.cpv)}</td>
-          <td>${platformCell(rows, "meta")}</td>
-          <td>${platformCell(rows, "tiktok")}</td>
+          <td class="l">${shortDate(p.start)} ~ ${shortDate(p.end)}${spans ? `<span class="span-badge">월 걸침</span>` : ""}</td>
+          <td class="l name">${esc(p.name)}<span class="sub">세팅 ${settings.length}개${spans && scope !== "all" ? ` · 전체 ${fmtWon(p.total.spend)} / ${fmtInt(p.total.plays)}회` : ""}</span></td>
+          <td>${fmtWon(t.spend)}</td>
+          <td><b>${fmtInt(t.plays)}</b></td>
+          ${tpCell(t)}
+          <td>${pill(t.cpv, p.tier)}</td>
+          <td>${platCell(rows, "meta")}</td>
+          <td>${platCell(rows, "tiktok")}</td>
         </tr>
-        <tr class="period-detail-row" id="period-detail-${i}" hidden>
-          <td colspan="8"><div class="detail-list">${rows.map(cardHTML).join("")}</div></td>
+        <tr class="detail-row" ${open ? "" : "hidden"}><td colspan="9"><div class="cards">${settings.map(settingCard).join("")}</div></td></tr>`;
+    }).join("");
+    const all = DAYS.filter(d => inScope(d, scope));
+    const t = sum(all);
+    foot.innerHTML = `
+      <tr><td></td><td class="l">합계</td><td class="l">${periods.length}건</td>
+        <td>${fmtWon(t.spend)}</td><td>${fmtInt(t.plays)}</td>${tpCell(t)}<td>${fmtCpv(t.cpv)}</td>
+        <td>${platCell(all, "meta")}</td><td>${platCell(all, "tiktok")}</td></tr>`;
+  }
+
+  function renderMonths() {
+    document.getElementById("monthRows").innerHTML = MONTHS.map(m => {
+      const rows = DAYS.filter(d => d.month === m);
+      const t = sum(rows);
+      const periods = PERIODS.filter(p => p.months.includes(m)).sort((a, b) => a.start < b.start ? -1 : 1);
+      const names = periods.map(p => `${shortDate(p.start)} ${esc(p.name)}`).join(", ");
+      return `
+        <tr class="clickable ${m === scope ? "selected" : ""}" data-month="${m}" tabindex="0">
+          <td class="l"><b>${monthLabel(m)}</b></td>
+          <td class="l name">${periods.length}건<span class="sub">${names}</span></td>
+          <td>${fmtWon(t.spend)}</td>
+          <td><b>${fmtInt(t.plays)}</b></td>
+          ${tpCell(t)}
+          <td>${fmtCpv(t.cpv)}</td>
+          <td>${platCell(rows, "meta")}</td>
+          <td>${platCell(rows, "tiktok")}</td>
         </tr>`;
     }).join("");
+  }
 
-    tbody.querySelectorAll(".period-row").forEach(row => {
-      row.addEventListener("click", () => {
-        const detail = document.getElementById(row.dataset.target);
-        detail.hidden = !detail.hidden;
-        row.classList.toggle("open", !detail.hidden);
-      });
-    });
-  })();
-
-  // ---- chart: CPV bar per setting, sorted by date ----
-  (function renderChart() {
-    const svg = document.getElementById("cpvSvg");
+  function renderChart() {
+    const svg = document.getElementById("chart");
     const tooltip = document.getElementById("tooltip");
     const wrap = document.getElementById("chartWrap");
-    const W = 1040, H = 280;
-    const padL = 42, padR = 10, padT = 14, padB = 64;
+    const data = [...PERIODS].reverse().filter(p => p.total.cpv !== null);
+    const W = 1040, H = 270, padL = 44, padR = 10, padT = 18, padB = 44;
     const plotW = W - padL - padR, plotH = H - padT - padB;
-
-    const data = ROWS;
-    const n = data.length;
-    const validCpv = data.filter(d => d.cpv !== null && d.cpv !== undefined);
-    const maxCPV = validCpv.length ? Math.max(...validCpv.map(d => d.cpv)) : 0;
-    const niceMax = Math.ceil((maxCPV * 1.15) / 10) * 10 || 10;
-    const validIdxs = data.map((d,i)=>i).filter(i => data[i].cpv !== null && data[i].cpv !== undefined);
-    const bestIdx = validIdxs.length ? validIdxs.reduce((b,i)=> data[i].cpv < data[b].cpv ? i : b, validIdxs[0]) : -1;
-    const worstIdx = validIdxs.length ? validIdxs.reduce((w,i)=> data[i].cpv > data[w].cpv ? i : w, validIdxs[0]) : -1;
-
-    const x0 = i => padL + (plotW / n) * i;
-    const bw = (plotW / n) * 0.6;
+    const n = data.length || 1;
+    const maxV = Math.max(...data.map(p => p.total.cpv), 1);
+    const niceMax = Math.ceil(maxV * 1.12 / 5) * 5;
     const y = v => padT + plotH - (v / niceMax) * plotH;
-
+    const slot = plotW / n, bw = Math.max(6, slot * 0.62);
     let html = "";
-    const ySteps = 4;
-    for (let s = 0; s <= ySteps; s++) {
-      const val = niceMax * (s / ySteps);
-      const gy = y(val);
-      html += `<line class="gridline" x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}"/>`;
-      html += `<text class="axis-y-label" x="${padL - 8}" y="${gy + 3}" text-anchor="end">₩${val.toFixed(0)}</text>`;
+    for (let s = 0; s <= 4; s++) {
+      const v = niceMax * s / 4, gy = y(v);
+      html += `<line class="gridline" x1="${padL}" x2="${W - padR}" y1="${gy}" y2="${gy}"/>`;
+      html += `<text class="axis" x="${padL - 8}" y="${gy + 3}" text-anchor="end">₩${v.toFixed(0)}</text>`;
     }
-    html += `<line class="baseline" x1="${padL}" y1="${padT+plotH}" x2="${W-padR}" y2="${padT+plotH}"/>`;
-
-    data.forEach((d, i) => {
-      const bx = x0(i) + (plotW/n - bw)/2;
-      const by = y(d.cpv);
-      const bh = plotH - (by - padT);
-      const barFill = d.tier === "good" ? "var(--status-good)" : d.tier === "bad" ? "var(--status-bad)" : "var(--surface-3)";
-      html += `<rect class="bar" data-i="${i}" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(bh,2).toFixed(1)}" rx="4" fill="${barFill}" stroke="var(--border-2)"/>`;
-      const label = d.date ? d.date.slice(2).replace(/-/g,"/") : "?";
-      const ty = H - padB + 14;
-      html += `<text class="axis-label" x="${(bx+bw/2).toFixed(1)}" y="${ty}" text-anchor="end" transform="rotate(-40 ${(bx+bw/2).toFixed(1)} ${ty})">${label}</text>`;
-      if (i === bestIdx) html += `<text class="bar-best-label" x="${(bx+bw/2).toFixed(1)}" y="${(by-8).toFixed(1)}" text-anchor="middle">최저</text>`;
-      if (i === worstIdx) html += `<text class="bar-worst-label" x="${(bx+bw/2).toFixed(1)}" y="${(by-8).toFixed(1)}" text-anchor="middle">최고</text>`;
+    html += `<line class="baseline" x1="${padL}" x2="${W - padR}" y1="${padT + plotH}" y2="${padT + plotH}"/>`;
+    data.forEach((p, i) => {
+      const x = padL + slot * i + (slot - bw) / 2;
+      const by = y(p.total.cpv);
+      const fill = p.tier === "good" ? "var(--status-good)" : p.tier === "bad" ? "var(--status-bad)" : "var(--surface-3)";
+      const active = scope === "all" || p.months.includes(scope);
+      html += `<rect class="bar" data-i="${i}" x="${x.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(2, padT + plotH - by).toFixed(1)}" rx="3" fill="${fill}" stroke="var(--border-2)" opacity="${active ? 1 : 0.28}"/>`;
+      if (n <= 30 || i % 2 === 0) html += `<text class="axis" x="${(x + bw / 2).toFixed(1)}" y="${H - 24}" text-anchor="middle">${shortDate(p.start)}</text>`;
     });
-
     svg.innerHTML = html;
-
     svg.querySelectorAll(".bar").forEach(rect => {
       rect.addEventListener("pointerenter", () => {
-        const i = +rect.dataset.i;
-        const d = data[i];
-        const bbox = rect.getBoundingClientRect();
-        const wrapBox = wrap.getBoundingClientRect();
-        tooltip.style.left = (bbox.left - wrapBox.left + bbox.width/2) + "px";
-        tooltip.style.top = (bbox.top - wrapBox.top) + "px";
+        const p = data[+rect.dataset.i];
+        const b = rect.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+        const m = sum(p.days.filter(d => d.platform === "meta")), k = sum(p.days.filter(d => d.platform === "tiktok"));
+        tooltip.style.left = (b.left - w.left + b.width / 2) + "px";
+        tooltip.style.top = (b.top - w.top) + "px";
         tooltip.style.opacity = 1;
         tooltip.innerHTML = `
-          <div class="tooltip-date">${d.adset_name || d.campaign_name}</div>
-          <div class="tooltip-row"><span class="k">예산</span><span class="v">${budgetLabel(d)}</span></div>
-          <div class="tooltip-row"><span class="k">광고비</span><span class="v">${fmtWon(d.spend)}</span></div>
-          <div class="tooltip-row"><span class="k">${d.ad_view_label || "조회"}</span><span class="v">${fmtInt(d.ad_view_count)}</span></div>
-          <div class="tooltip-row"><span class="k">완료조회</span><span class="v">${fmtInt(d.completion_views)} (${fmtPct(d.completion_rate)})</span></div>
-          <div class="tooltip-row"><span class="k">CPV</span><span class="v">${fmtCPV(d.cpv)}</span></div>`;
+          <div class="tt-title">${shortDate(p.start)} ${esc(p.name)}</div>
+          <div class="tt-row"><span class="k">광고비</span><span class="v">${fmtWon(p.total.spend)}</span></div>
+          <div class="tt-row"><span class="k">조회수</span><span class="v">${fmtInt(p.total.plays)}</span></div>
+          <div class="tt-row"><span class="k">트루플레이</span><span class="v">${fmtInt(p.total.tp)}</span></div>
+          <div class="tt-row"><span class="k">조회당 비용</span><span class="v">${fmtCpv(p.total.cpv)}</span></div>
+          <div class="tt-row"><span class="k">Meta / TikTok</span><span class="v">${fmtCpv(m.cpv)} / ${fmtCpv(k.cpv)}</span></div>`;
       });
       rect.addEventListener("pointerleave", () => { tooltip.style.opacity = 0; });
     });
-  })();
+  }
 
-  // ---- guide comment: aggregate by optimization goal to find the most efficient recipe ----
-  (function renderGuide() {
-    const byGoal = {};
-    ROWS.forEach(r => {
-      const g = r.optimization_goal || "UNKNOWN";
-      byGoal[g] = byGoal[g] || { spend: 0, views: 0, budgets: [] };
-      byGoal[g].spend += r.spend;
-      byGoal[g].views += r.views;
-      if (r.budget) byGoal[g].budgets.push(r.budget);
+  function renderGuide() {
+    const out = [];
+    ["meta", "tiktok"].forEach(platform => {
+      const settings = SETTINGS.filter(s => s.platform === platform && s.total.plays > 0);
+      if (!settings.length) return;
+      const platPlays = settings.reduce((a, s) => a + s.total.plays, 0);
+      const groups = new Map();
+      settings.forEach(s => {
+        const g = s.optimization_goal || "UNKNOWN";
+        if (!groups.has(g)) groups.set(g, []);
+        groups.get(g).push(s);
+      });
+      const ranked = [...groups.entries()].map(([goal, list]) => {
+        const t = sum(list.flatMap(s => s.days));
+        return { goal, list, t, share: t.plays / platPlays };
+      }).filter(g => g.share >= 0.05 && g.t.cpv !== null).sort((a, b) => a.t.cpv - b.t.cpv);
+      if (!ranked.length) return;
+      const best = ranked[0];
+      const top = [...best.list].filter(s => s.total.cpv !== null).sort((a, b) => a.total.cpv - b.total.cpv)[0];
+      const daily = best.list.filter(s => s.budget && String(s.budget_period).startsWith("일")).map(s => s.budget).sort((a, b) => a - b);
+      const budgetTxt = daily.length ? `일예산 ${fmtWon(daily[0])}~${fmtWon(daily[daily.length - 1])} 구간에서` : "기존 예산 수준에서";
+      let line = `<b>${PLATFORM_NAME[platform]}</b>: <b>${GOAL_LABEL[best.goal] || best.goal}</b> 목표가 조회당 <b>${fmtCpv(best.t.cpv)}</b>로 가장 효율적 (트루플레이율 ${fmtPct(best.t.tpRate)}). ${budgetTxt} 이 목표 유지 추천. 최고 세팅은 "${esc(top.name)}" (조회당 ${fmtCpv(top.total.cpv)}).`;
+      if (ranked.length > 1) {
+        const worst = ranked[ranked.length - 1];
+        line += ` 반대로 <b>${GOAL_LABEL[worst.goal] || worst.goal}</b>는 조회당 ${fmtCpv(worst.t.cpv)}라 조회수 목적이면 피할 것.`;
+      }
+      out.push(`<p>${line}</p>`);
     });
-    const totalViews = ROWS.reduce((a,r)=>a+r.views, 0);
-    const candidates = Object.entries(byGoal)
-      .map(([goal, g]) => ({
-        goal, cpv: g.spend / g.views, views: g.views,
-        share: g.views / totalViews,
-        avgBudget: g.budgets.reduce((a,b)=>a+b,0) / (g.budgets.length || 1),
-      }))
-      .filter(c => c.views > 0 && c.share >= 0.05)
-      .sort((a,b) => a.cpv - b.cpv);
-
-    const el = document.getElementById("guideText");
-    if (candidates.length === 0) {
-      el.innerHTML = "<p>아직 목표별로 비교할 만큼 데이터가 쌓이지 않았어요.</p>";
-      return;
+    const recent = PERIODS.slice(0, 6).filter(p => p.total.cpv !== null);
+    if (recent.length) {
+      const best = [...recent].sort((a, b) => a.total.cpv - b.total.cpv)[0];
+      const m = sum(best.days.filter(d => d.platform === "meta")), k = sum(best.days.filter(d => d.platform === "tiktok"));
+      const share = best.total.spend ? Math.round(m.spend / best.total.spend * 100) : 0;
+      out.push(`<p>최근 캠페인 ${recent.length}건 중 <b>${shortDate(best.start)} ${esc(best.name)}</b>가 조회당 <b>${fmtCpv(best.total.cpv)}</b>로 가장 좋았음. 광고비 배분 Meta ${share}% / TikTok ${100 - share}% (Meta 조회당 ${fmtCpv(m.cpv)}, TikTok 조회당 ${fmtCpv(k.cpv)}).</p>`);
     }
+    document.getElementById("guide").innerHTML = out.join("") || "<p>아직 비교할 데이터가 부족해요.</p>";
+  }
 
-    const best = candidates[0];
-    const bestRow = [...ROWS].filter(r => r.optimization_goal === best.goal).sort((a,b)=>a.cpv-b.cpv)[0];
-    const budgetLow = Math.floor(best.avgBudget * 0.9 / 1000) * 1000;
-    const budgetHigh = Math.ceil(best.avgBudget * 1.1 / 1000) * 1000;
+  function renderAll() {
+    renderScope();
+    renderTiles();
+    renderCampaigns();
+    renderMonths();
+    renderChart();
+  }
 
-    let html = `<p>지금까지 데이터 기준, <b>${GOAL_LABEL[best.goal] || best.goal}</b> 목표로 최적화했을 때 평균 CPV
-      <b>${fmtCPV(best.cpv)}</b>로 가장 효율적이었음(전체 조회수의 ${(best.share*100).toFixed(0)}% 차지).
-      다음 세팅은 <b>일 예산 ${fmtWon(budgetLow)}~${fmtWon(budgetHigh)}</b>, <b>${ageLabel(bestRow)}</b>,
-      <b>${platformLabel(bestRow)}</b> 타겟으로 이 목표를 재사용하는 걸 추천.</p>`;
-
-    if (candidates.length > 1) {
-      const worst = candidates[candidates.length - 1];
-      html += `<p>반대로 <b>${GOAL_LABEL[worst.goal] || worst.goal}</b> 목표는 평균 CPV
-        <b>${fmtCPV(worst.cpv)}</b>로 가장 비효율적이었음 — 조회수 확보가 목적이라면 이 목표는 피할 것.</p>`;
+  document.getElementById("updatedAt").textContent = `데이터 기준 ${UPDATED_AT}`;
+  document.addEventListener("click", e => {
+    const s = e.target.closest("[data-scope]");
+    if (s) { scope = s.dataset.scope; openPeriods.clear(); renderAll(); return; }
+    const m = e.target.closest("tr[data-month]");
+    if (m) { scope = m.dataset.month; openPeriods.clear(); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const p = e.target.closest("tr[data-period]");
+    if (p) {
+      const key = p.dataset.period;
+      openPeriods.has(key) ? openPeriods.delete(key) : openPeriods.add(key);
+      renderCampaigns();
     }
-    el.innerHTML = html;
-  })();
+  });
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr[data-period], tr[data-month]")) {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
+  renderAll();
+  renderGuide();
 </script>
 </body>
 </html>
