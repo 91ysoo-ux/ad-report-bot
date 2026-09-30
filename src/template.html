@@ -300,16 +300,18 @@
     s.total = sum(s.days);
   });
 
-  // A campaign period = every Meta/TikTok setting that started on the same day.
+  // A campaign period = every Meta/TikTok setting that started on the same day (or one day apart).
   const PERIODS = [];
   (function buildPeriods() {
-    const map = new Map();
-    SETTINGS.forEach(s => {
-      if (!s.days.length) return;
-      if (!map.has(s.period)) map.set(s.period, { start: s.period, settings: [] });
-      map.get(s.period).settings.push(s);
+    // Meta and TikTok sometimes start the same campaign a day apart; starts within 1 day are one campaign.
+    const dayDiff = (a, b) => (Date.parse(b) - Date.parse(a)) / 86400000;
+    const groups = [];
+    SETTINGS.filter(s => s.days.length).sort((a, b) => a.period < b.period ? -1 : 1).forEach(s => {
+      const g = groups[groups.length - 1];
+      if (g && dayDiff(g.start, s.period) <= 1) g.settings.push(s);
+      else groups.push({ start: s.period, settings: [s] });
     });
-    map.forEach(p => {
+    groups.forEach(p => {
       p.days = p.settings.flatMap(s => s.days);
       p.end = p.days.map(d => d.day).sort().pop();
       p.months = [...new Set(p.days.map(d => d.month))];
