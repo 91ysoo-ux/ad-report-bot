@@ -93,6 +93,43 @@
   th.vlast, td.vlast { border-right: 2px solid var(--accent); }
   tbody tr:last-child td.vcol, tfoot td.vcol { border-bottom: 2px solid var(--accent); }
   td.vtotal { font-weight: 800; color: var(--accent); }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: -8px; }
+  .tab { appearance: none; background: none; border: none; border-bottom: 3px solid transparent; font: inherit;
+    font-size: 15px; font-weight: 700; color: var(--muted); padding: 10px 18px; cursor: pointer; margin-bottom: -1px; }
+  .tab:hover { color: var(--ink-2); }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab-panel { display: flex; flex-direction: column; gap: 24px; }
+  .tab-panel[hidden] { display: none; }
+  .vbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .vbar select { font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border-2);
+    background: var(--surface); color: var(--ink); }
+  .vnote { font-size: 12px; color: var(--muted); }
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .vcard { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; min-width: 0; }
+  .vthumb { position: relative; aspect-ratio: 4 / 5; background: var(--surface-3); max-width: 100%; }
+  .vthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vthumb .noimg { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; color: var(--muted); }
+  .vchip { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; }
+  .vchip span { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 100px; background: rgba(0,0,0,0.6); color: #fff;
+    display: inline-flex; align-items: center; gap: 5px; }
+  .vbody { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .vtitle { font-size: 14px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .vtitle small { font-weight: 500; color: var(--muted); }
+  .vnums { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 2px solid var(--accent); background: var(--accent-soft); border-radius: 10px; }
+  .vnums div { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .vnums div + div { border-left: 1px solid var(--border); }
+  .vnums span { font-size: 11px; font-weight: 700; color: var(--ink-2); }
+  .vnums b { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .vnums .tot b { color: var(--accent); }
+  .vcost { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
+  .vcost b { font-variant-numeric: tabular-nums; }
+  table.vsplit { min-width: 0; }
+  table.vsplit th, table.vsplit td { padding: 5px 4px; font-size: 11.5px; }
+  .vlinks { display: flex; gap: 12px; font-size: 12px; }
+  .vlinks a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .vlinks a:hover { text-decoration: underline; }
+  .empty { color: var(--muted); font-size: 14px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
   .dot.meta { background: var(--meta); }
   .dot.tiktok { background: var(--tiktok); }
@@ -197,7 +234,14 @@
     <div class="updated" id="updatedAt"></div>
   </div>
 
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabBtnDashboard" data-tab="dashboard" aria-selected="true">대시보드</button>
+    <button class="tab" role="tab" id="tabBtnPosts" data-tab="posts" aria-selected="false">게시물</button>
+  </div>
+
   <div class="scope" id="scope"></div>
+
+  <div class="tab-panel" id="tab-dashboard">
 
   <div class="views-box" id="viewsBox"></div>
 
@@ -262,6 +306,25 @@
       <div class="guide-title">다음 세팅 가이드 (전체 기간 데이터 기준 · 갱신마다 자동 작성)</div>
       <div id="guide"></div>
     </div>
+  </div>
+
+  </div>
+
+  <div class="tab-panel" id="tab-posts" hidden>
+    <div class="vbar">
+      <div class="section-title" id="vcount"></div>
+      <label class="vnote">정렬
+        <select id="vsort">
+          <option value="date">최신순</option>
+          <option value="total">총 조회수 많은 순</option>
+          <option value="organic">자연 조회수 많은 순</option>
+          <option value="cpv">실질 조회당 비용 낮은 순</option>
+        </select>
+      </label>
+    </div>
+    <div class="vgrid" id="videoGrid"></div>
+    <div class="vnote">같은 영상은 인스타·틱톡을 한 카드로 묶음 · 실질 조회당 비용 = 광고비 ÷ 총 조회수(광고+자연) ·
+      인스타 광고 조회수는 광고 전용 게시물에서 나온 숫자라 릴스 화면의 조회수와 다를 수 있음</div>
   </div>
 
   <footer>
@@ -382,6 +445,56 @@
     const target = sameDay || metaOnly;
     if (target) target.posts.push(o);
   });
+  // ---------- videos (posts tab) ----------
+  // One card per video: a reel and a TikTok post of the same video share a caption, a campaign with
+  // exactly one post per platform is one video, and posts sharing an ad group can't be told apart.
+  const VIDEOS = (function buildVideos() {
+    const parent = POSTS.map((_, i) => i);
+    const find = i => parent[i] === i ? i : (parent[i] = find(parent[i]));
+    const join = (a, b) => { parent[find(a)] = find(b); };
+    const capKey = s => String(s || "").replace(/[\s\u3164\u115f\u1160\u200b\ufeff]+/g, "").slice(0, 12);
+    POSTS.forEach((a, i) => POSTS.forEach((b, j) => {
+      if (j <= i) return;
+      const sharesKey = a.keys.some(k => b.keys.includes(k));
+      const sameCaption = a.platform !== b.platform && capKey(a.title) && capKey(a.title) === capKey(b.title)
+        && Math.abs(daysBetween(a.date, b.date)) <= 3;
+      if (sharesKey || sameCaption) join(i, j);
+    }));
+    PERIODS.forEach(p => {
+      const ig = p.posts.filter(o => o.platform === "meta"), tt = p.posts.filter(o => o.platform === "tiktok");
+      if (ig.length === 1 && tt.length === 1) join(POSTS.indexOf(ig[0]), POSTS.indexOf(tt[0]));
+    });
+    const groups = new Map();
+    POSTS.forEach((o, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(o); });
+    return [...groups.values()].map(posts => {
+      const keys = new Set(posts.flatMap(o => o.keys));
+      const days = DAYS.filter(d => keys.has(d.key));
+      const byPlat = pl => {
+        const ps = posts.filter(o => o.platform === pl);
+        const ad = sum(days.filter(d => d.platform === pl));
+        const known = ps.length > 0 && ps.every(o => o.organic !== null);
+        return { posts: ps, spend: ad.spend, ad: ad.plays, organic: known ? ps.reduce((a, o) => a + o.organic, 0) : null };
+      };
+      const meta = byPlat("meta"), tiktok = byPlat("tiktok");
+      const date = posts.map(o => o.date).sort()[0];
+      const titles = [...new Set(posts.map(o => o.title).filter(s => capKey(s)))];
+      const thumb = (posts.find(o => o.platform === "meta" && o.thumb) || posts.find(o => o.thumb) || {}).thumb;
+      const spend = meta.spend + tiktok.spend, ad = meta.ad + tiktok.ad;
+      const known = meta.organic !== null || tiktok.organic !== null;
+      const total = ad + (meta.organic || 0) + (tiktok.organic || 0);
+      return { posts, date, month: date.slice(0, 7), thumb, title: titles[0] || "(제목 없음)", more: titles.length - 1,
+        meta, tiktok, spend, ad, organic: known ? total - ad : null, total, realCpv: spend && total ? spend / total : null };
+    });
+  })();
+  (function assignVideoTiers() {
+    VIDEOS.forEach(v => v.tier = "mid");
+    const ranked = VIDEOS.filter(v => v.realCpv !== null).sort((a, b) => a.realCpv - b.realCpv);
+    const n = ranked.length;
+    if (n < 3) return;
+    const cut = Math.floor(n / 3);
+    ranked.forEach((v, i) => { v.tier = i < cut ? "good" : i >= n - cut ? "bad" : "mid"; });
+  })();
+
   function organicOf(posts) {
     const o = { meta: null, tiktok: null };
     posts.forEach(x => { if (x.organic !== null) o[x.platform] = (o[x.platform] || 0) + x.organic; });
@@ -427,6 +540,55 @@
       </a>`).join("")}</div>`;
   const viewCells = (ad, o) => `<td class="vcol vfirst">${fmtInt(ad)}</td>${orgCell(o)}<td class="vcol vlast vtotal">${fmtInt(ad + o.total)}</td>`;
   const tpCell = t => `<td class="tp">${fmtInt(t.tp)}<span class="rate">${fmtPct(t.tpRate)}</span></td>`;
+
+  const fullDate = d => `${d.slice(0, 4)}.${d.slice(5, 7)}.${d.slice(8, 10)}`;
+  const vrow = (label, cls, x) => !x.posts.length && !x.spend ? "" :
+    `<tr><td class="l"><i class="dot ${cls}"></i> ${label}</td><td>${fmtShortWon(x.spend)}</td><td>${fmtInt(x.ad)}</td>
+      <td>${x.organic === null ? "—" : fmtInt(x.organic)}</td><td><b>${fmtInt(x.ad + (x.organic || 0))}</b></td></tr>`;
+  function videoCard(v) {
+    const plats = [v.meta.posts.length ? `<span><i class="dot meta"></i>인스타</span>` : "", v.tiktok.posts.length ? `<span><i class="dot tiktok"></i>틱톡</span>` : ""].join("");
+    const links = v.posts.filter(o => o.url).map(o => `<a href="${esc(o.url)}" target="_blank" rel="noopener">${o.platform === "meta" ? "인스타 릴스" : "틱톡 게시물"} ↗</a>`).join("");
+    return `
+      <article class="vcard">
+        <div class="vthumb">
+          ${v.thumb ? `<img src="${esc(v.thumb)}" alt="" loading="lazy">` : `<div class="noimg">썸네일 없음</div>`}
+          <div class="vchip">${plats}</div>
+        </div>
+        <div class="vbody">
+          <div class="vtitle">${esc(v.title)}${v.more > 0 ? ` <small>외 ${v.more}편</small>` : ""}</div>
+          <div class="vnote">${fullDate(v.date)} 게시</div>
+          <div class="vnums">
+            <div><span>광고 조회수</span><b>${fmtInt(v.ad)}</b></div>
+            <div><span>자연 조회수</span><b>${v.organic === null ? "—" : fmtInt(v.organic)}</b></div>
+            <div class="tot"><span>총 조회수</span><b>${fmtInt(v.total)}</b></div>
+          </div>
+          <div class="vcost"><span>광고비 <b>${fmtWon(v.spend)}</b></span>
+            ${v.realCpv === null ? `<span class="vnote">광고 없음</span>` : `<span class="vnote">실질 조회당 ${pill(v.realCpv, v.tier)}</span>`}</div>
+          <table class="vsplit">
+            <thead><tr><th class="l"></th><th>광고비</th><th>광고</th><th>자연</th><th>총</th></tr></thead>
+            <tbody>${vrow("인스타", "meta", v.meta)}${vrow("틱톡", "tiktok", v.tiktok)}</tbody>
+          </table>
+          <div class="vlinks">${links}</div>
+        </div>
+      </article>`;
+  }
+  function renderVideos() {
+    const by = document.getElementById("vsort").value;
+    const list = VIDEOS.filter(v => scope === "all" || v.month === scope);
+    const key = { total: v => v.total, organic: v => v.organic ?? -1 };
+    list.sort((a, b) => by === "date" ? (a.date < b.date ? 1 : -1)
+      : by === "cpv" ? (a.realCpv ?? Infinity) - (b.realCpv ?? Infinity)
+      : key[by](b) - key[by](a));
+    document.getElementById("vcount").textContent = `${monthLabel(scope)} 게시물 ${list.length}개`;
+    document.getElementById("videoGrid").innerHTML = list.length ? list.map(videoCard).join("")
+      : `<p class="empty">이 기간에 올린 게시물이 없어요.</p>`;
+  }
+  let tab = location.hash === "#posts" ? "posts" : "dashboard";
+  function renderTab() {
+    document.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
+    document.getElementById("tab-dashboard").hidden = tab !== "dashboard";
+    document.getElementById("tab-posts").hidden = tab !== "posts";
+  }
 
   // ---------- render ----------
   function renderScope() {
@@ -683,10 +845,15 @@
     renderCampaigns();
     renderMonths();
     renderChart();
+    renderVideos();
+    renderTab();
   }
 
   document.getElementById("updatedAt").textContent = `데이터 기준 ${UPDATED_AT}`;
+  document.getElementById("vsort").addEventListener("change", renderVideos);
   document.addEventListener("click", e => {
+    const tb = e.target.closest("[data-tab]");
+    if (tb) { tab = tb.dataset.tab; history.replaceState(null, "", "#" + tab); renderTab(); return; }
     const s = e.target.closest("[data-scope]");
     if (s) { scope = s.dataset.scope; openPeriods.clear(); renderAll(); return; }
     const m = e.target.closest("tr[data-month]");

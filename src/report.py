@@ -14,9 +14,11 @@ Run manually for local testing (reads .env), or via GitHub Actions
 import json
 import os
 import re
+from io import BytesIO
 from datetime import date, datetime, timedelta, timezone
 
 import requests
+from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 META_API_VER = "v21.0"
@@ -307,6 +309,9 @@ ORGANIC_SINCE = "2025-09-01"
 ORGANIC_CACHE = os.path.join(ROOT, "data", "organic_cache.json")
 # Old TikTok posts barely move; re-scraping them would only burn Apify credit.
 TIKTOK_REFRESH_DAYS = 45
+# Platform image URLs are signed and expire, so thumbnails are saved next to the page.
+THUMB_DIR = os.path.join(ROOT, "docs", "thumbs")
+_INVISIBLE = re.compile(r"[\s\u3164\u115f\u1160\u200b\ufeff]+")
 
 
 def _kst_date(ts):
@@ -319,19 +324,53 @@ def _first_line(text, limit=40):
     return next((l.strip() for l in (text or "").splitlines() if l.strip()), "")[:limit]
 
 
+def _write_thumb(data, path):
+    """Covers come in at several MB; a card only needs a small JPEG."""
+    img = Image.open(BytesIO(data)).convert("RGB")
+    img.thumbnail((360, 640))
+    img.save(path, "JPEG", quality=80, optimize=True)
+
+
+def _save_thumb(url, name):
+    """Download once; returns the page-relative path, or None if there is no image."""
+    path = os.path.join(THUMB_DIR, name)
+    if not os.path.exists(path) and url:
+        try:
+            r = requests.get(url, timeout=30)
+            r.raise_for_status()
+            os.makedirs(THUMB_DIR, exist_ok=True)
+            _write_thumb(r.content, path)
+        except (requests.RequestException, OSError) as e:
+            print(f"thumbnail {name} skipped: {e}")
+    return f"thumbs/{name}" if os.path.exists(path) else None
+
+
+def _caption_key(text):
+    """Ad posts copy the reel's caption, so the caption ties an ad post back to its reel."""
+    return _INVISIBLE.sub("", text or "")[:20]
+
+
 def build_instagram_organic():
     """Own reels' insights. Meta leaves ad activity out of media insights, so these views are organic."""
-    ad_keys = {}
+    ad_keys, caption_keys = {}, {}
     for a in meta_get_all(f"{META_ACCOUNT}/ads", {
         "fields": "adset_id,creative{effective_instagram_media_id}", "limit": 200,
     }):
         mid = (a.get("creative") or {}).get("effective_instagram_media_id")
         if mid:
             ad_keys.setdefault(mid, set()).add("meta:" + a["adset_id"])
+    # Ads made as separate ad posts don't point at the reel; match them by caption instead.
+    for mid, keys in ad_keys.items():
+        try:
+            key = _caption_key(meta_get(mid, {"fields": "caption"}).get("caption"))
+        except requests.HTTPError:
+            continue
+        if key:
+            caption_keys.setdefault(key, set()).update(keys)
 
     rows = []
     for m in meta_get_all(f"{IG_USER_ID}/media", {
-        "fields": "id,timestamp,media_product_type,permalink,caption", "limit": 100,
+        "fields": "id,timestamp,media_product_type,permalink,caption,thumbnail_url,media_url", "limit": 100,
     }):
         day = _kst_date(m["timestamp"])
         if m.get("media_product_type") != "REELS" or day < ORGANIC_SINCE:
@@ -346,7 +385,9 @@ def build_instagram_organic():
             "platform": "meta", "id": m["id"], "date": day, "total": None,
             "organic": int(v.get("views") or 0), "likes": int(v.get("likes") or 0),
             "shares": int(v.get("shares") or 0), "url": m.get("permalink"),
-            "title": _first_line(m.get("caption")), "keys": sorted(ad_keys.get(m["id"], [])),
+            "title": _first_line(m.get("caption")),
+            "keys": sorted(ad_keys.get(m["id"], set()) | caption_keys.get(_caption_key(m.get("caption")), set())),
+            "thumb": _save_thumb(m.get("thumbnail_url") or m.get("media_url"), f"ig_{m['id']}.jpg"),
         })
     return rows
 
@@ -389,7 +430,8 @@ def build_tiktok_organic(tiktok_daily):
     today = datetime.now(KST).date()
     cutoff = (today - timedelta(days=TIKTOK_REFRESH_DAYS)).isoformat()
     stale = [i for i, keys in item_keys.items()
-             if i not in cache or max(last_day.get(k, "") for k in keys) >= cutoff]
+             if i not in cache or max(last_day.get(k, "") for k in keys) >= cutoff
+             or not os.path.exists(os.path.join(THUMB_DIR, f"tt_{i}.jpg"))]
     if stale and APIFY_TOKEN:
         try:
             for i, it in _apify_tiktok(stale).items():
@@ -399,6 +441,7 @@ def build_tiktok_organic(tiktok_daily):
                     "url": it.get("webVideoUrl"), "title": _first_line(it.get("text")),
                     "fetched": today.isoformat(),
                 }
+                _save_thumb((it.get("videoMeta") or {}).get("coverUrl"), f"tt_{i}.jpg")
         except requests.RequestException as e:
             print(f"apify tiktok scrape failed, using cached counts: {e}")
     elif stale:
@@ -433,6 +476,8 @@ def build_tiktok_organic(tiktok_daily):
             "likes": sum(c["likes"] for c in posts), "shares": sum(c["shares"] for c in posts),
             "url": posts[0]["url"], "title": " / ".join(c["title"] for c in posts)[:60],
             "keys": sorted(g["keys"]),
+            "thumb": next((f"thumbs/tt_{i}.jpg" for i in sorted(g["ids"])
+                           if os.path.exists(os.path.join(THUMB_DIR, f"tt_{i}.jpg"))), None),
         })
     return rows
 
