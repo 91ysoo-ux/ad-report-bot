@@ -36,6 +36,16 @@
 4. **월별 추이** - 모든 달의 합계와 그 달 캠페인 이름. 행을 누르면 그 달로 이동
 5. **캠페인별 조회당 비용 막대그래프**
 6. **다음 세팅 가이드** - 목표(optimization_goal)별 조회당 비용 비교로 추천 목표·예산 자동 작성
+## 자연조회수
+
+- **인스타**: 계정 릴스의 인사이트 `views`. 메타는 미디어 인사이트에서 광고 활동을 빼고 주므로 그대로 자연조회수다.
+  지금 인스타 광고는 별도 광고 게시물로 나가서 릴스와 직접 연결되지 않는다 - 같은 날 올린 틱톡 게시물로 캠페인을 짝짓는다.
+  토큰에 `instagram_basic`, `instagram_manage_insights` 권한이 있어야 한다.
+- **틱톡**: 스파크 광고라 광고 조회가 게시물 조회수에 합쳐진다. 게시물 총 조회수(Apify `clockworks/tiktok-scraper`) - 광고 조회수.
+  광고그룹 하나에 게시물이 여러 개면 묶어서 계산한다. 마지막 광고일로부터 45일 지난 게시물은
+  `data/organic_cache.json` 값을 그대로 써서 Apify 크레딧(게시물당 약 $0.005)을 아낀다.
+- 권한이나 Apify가 실패해도 광고 리포트는 그대로 나오고, 로그에 `organic views skipped`가 찍힌다.
+
 ## 로컬에서 돌려보기
 
 ```bash
@@ -51,6 +61,7 @@ META_ACCESS_TOKEN=...
 META_AD_ACCOUNT_ID=act_...
 TIKTOK_ACCESS_TOKEN=...
 TIKTOK_ADVERTISER_ID=...
+APIFY_TOKEN=...
 ```
 
 TikTok 변수가 없으면 `build_tiktok()`이 빈 배열을 반환하고 Meta 데이터만으로

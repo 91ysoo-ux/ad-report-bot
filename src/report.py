@@ -1,10 +1,12 @@
-﻿"""Pulls Meta and TikTok ad performance and rewrites docs/index.html.
+"""Pulls Meta and TikTok ad performance and rewrites docs/index.html.
 
-Two datasets are embedded in the page:
+Three datasets are embedded in the page:
 - SETTINGS: one row per ad set / ad group (settings + schedule), no metrics.
 - DAILY: one row per ad set per day with spend and view metrics.
 Month totals are computed from DAILY, so a campaign that runs across a month
 boundary is split into the months it actually spent in.
+- ORGANIC: one row per post with its organic (non-ad) views. Instagram comes from
+  reel insights, TikTok from the post play count (scraped via Apify) minus ad plays.
 
 Run manually for local testing (reads .env), or via GitHub Actions
 (reads the same variable names from repo secrets).
@@ -296,29 +298,180 @@ def build_tiktok():
     return settings, daily
 
 
+# ---------------- organic views ----------------
+
+IG_USER_ID = os.environ.get("IG_USER_ID") or "17841429803805358"
+APIFY_TOKEN = os.environ.get("APIFY_TOKEN")
+TIKTOK_HANDLE = "goldstarbeer_official"
+ORGANIC_SINCE = "2025-09-01"
+ORGANIC_CACHE = os.path.join(ROOT, "data", "organic_cache.json")
+# Old TikTok posts barely move; re-scraping them would only burn Apify credit.
+TIKTOK_REFRESH_DAYS = 45
+
+
+def _kst_date(ts):
+    """'2026-09-21T08:08:54+0000' or '...Z' -> KST calendar date."""
+    ts = ts.replace("Z", "+00:00").replace("+0000", "+00:00")
+    return datetime.fromisoformat(ts).astimezone(KST).date().isoformat()
+
+
+def _first_line(text, limit=40):
+    return next((l.strip() for l in (text or "").splitlines() if l.strip()), "")[:limit]
+
+
+def build_instagram_organic():
+    """Own reels' insights. Meta leaves ad activity out of media insights, so these views are organic."""
+    ad_keys = {}
+    for a in meta_get_all(f"{META_ACCOUNT}/ads", {
+        "fields": "adset_id,creative{effective_instagram_media_id}", "limit": 200,
+    }):
+        mid = (a.get("creative") or {}).get("effective_instagram_media_id")
+        if mid:
+            ad_keys.setdefault(mid, set()).add("meta:" + a["adset_id"])
+
+    rows = []
+    for m in meta_get_all(f"{IG_USER_ID}/media", {
+        "fields": "id,timestamp,media_product_type,permalink,caption", "limit": 100,
+    }):
+        day = _kst_date(m["timestamp"])
+        if m.get("media_product_type") != "REELS" or day < ORGANIC_SINCE:
+            continue
+        try:
+            insights = meta_get(f"{m['id']}/insights", {"metric": "views,likes,shares"})["data"]
+        except requests.HTTPError as e:
+            print(f"instagram insights skipped for {m['id']}: {e}")
+            continue
+        v = {i["name"]: i["values"][0]["value"] for i in insights}
+        rows.append({
+            "platform": "meta", "id": m["id"], "date": day, "total": None,
+            "organic": int(v.get("views") or 0), "likes": int(v.get("likes") or 0),
+            "shares": int(v.get("shares") or 0), "url": m.get("permalink"),
+            "title": _first_line(m.get("caption")), "keys": sorted(ad_keys.get(m["id"], [])),
+        })
+    return rows
+
+
+def _apify_tiktok(item_ids):
+    r = requests.post(
+        "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/run-sync-get-dataset-items",
+        params={"token": APIFY_TOKEN, "timeout": 280},
+        json={
+            # TikTok resolves the post by id, the handle only has to be well-formed.
+            "postURLs": [f"https://www.tiktok.com/@{TIKTOK_HANDLE}/video/{i}" for i in item_ids],
+            "resultsPerPage": 1,
+            "shouldDownloadVideos": False, "shouldDownloadCovers": False,
+            "shouldDownloadSubtitles": False, "shouldDownloadSlideshowImages": False,
+        },
+        timeout=300,
+    )
+    r.raise_for_status()
+    return {str(it["id"]): it for it in r.json() if it.get("id") and not it.get("error")}
+
+
+def build_tiktok_organic(tiktok_daily):
+    """Spark Ads add their plays to the post itself, so organic = post play count - ad plays."""
+    if not TIKTOK_TOKEN or not TIKTOK_ADVERTISER_ID:
+        return []
+    item_keys = {}
+    for a in tiktok_get_all("ad/get/", {"advertiser_id": TIKTOK_ADVERTISER_ID}, page_size=100):
+        if a.get("tiktok_item_id"):
+            item_keys.setdefault(str(a["tiktok_item_id"]), set()).add("tiktok:" + a["adgroup_id"])
+
+    ad_plays, last_day = {}, {}
+    for key, day, _spend, _imp, plays, _tp, _comp in tiktok_daily:
+        ad_plays[key] = ad_plays.get(key, 0) + plays
+        last_day[key] = max(last_day.get(key, ""), day)
+
+    cache = {}
+    if os.path.exists(ORGANIC_CACHE):
+        with open(ORGANIC_CACHE, encoding="utf-8") as f:
+            cache = json.load(f)
+    today = datetime.now(KST).date()
+    cutoff = (today - timedelta(days=TIKTOK_REFRESH_DAYS)).isoformat()
+    stale = [i for i, keys in item_keys.items()
+             if i not in cache or max(last_day.get(k, "") for k in keys) >= cutoff]
+    if stale and APIFY_TOKEN:
+        try:
+            for i, it in _apify_tiktok(stale).items():
+                cache[i] = {
+                    "total": int(it.get("playCount") or 0), "likes": int(it.get("diggCount") or 0),
+                    "shares": int(it.get("shareCount") or 0), "date": _kst_date(it["createTimeISO"]),
+                    "url": it.get("webVideoUrl"), "title": _first_line(it.get("text")),
+                    "fetched": today.isoformat(),
+                }
+        except requests.RequestException as e:
+            print(f"apify tiktok scrape failed, using cached counts: {e}")
+    elif stale:
+        print("APIFY_TOKEN missing; TikTok organic views use cached counts only")
+    os.makedirs(os.path.dirname(ORGANIC_CACHE), exist_ok=True)
+    with open(ORGANIC_CACHE, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+    # One ad group can carry several posts (e.g. ep1+ep2), and its plays can't be split
+    # between them, so posts that share ad groups are measured together as one row.
+    groups = []
+    for i, keys in item_keys.items():
+        merged = {"ids": {i}, "keys": set(keys)}
+        for g in [g for g in groups if g["keys"] & keys]:
+            groups.remove(g)
+            merged["ids"] |= g["ids"]
+            merged["keys"] |= g["keys"]
+        groups.append(merged)
+
+    rows = []
+    for g in groups:
+        posts = [cache[i] for i in sorted(g["ids"]) if i in cache]
+        if len(posts) != len(g["ids"]):
+            continue  # a post the scraper couldn't read (deleted or private)
+        total = sum(c["total"] for c in posts)
+        # Ad groups that ran before TIKTOK_START have no ad plays on record, so organic is unknown.
+        known = all(k in ad_plays for k in g["keys"])
+        paid = sum(ad_plays.get(k, 0) for k in g["keys"])
+        rows.append({
+            "platform": "tiktok", "id": ",".join(sorted(g["ids"])), "date": min(c["date"] for c in posts),
+            "total": total, "organic": max(total - paid, 0) if known else None,
+            "likes": sum(c["likes"] for c in posts), "shares": sum(c["shares"] for c in posts),
+            "url": posts[0]["url"], "title": " / ".join(c["title"] for c in posts)[:60],
+            "keys": sorted(g["keys"]),
+        })
+    return rows
+
+
+def _optional(build, *args):
+    """Organic views are a bonus: a missing permission must not stop the ad report itself."""
+    try:
+        return build(*args)
+    except (requests.RequestException, RuntimeError, KeyError, ValueError) as e:
+        print(f"organic views skipped ({build.__name__}): {e}")
+        return []
+
+
 # ---------------- render ----------------
 
 def _embed(obj):
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
 
 
-def render(settings, daily):
+def render(settings, daily, organic):
     with open(os.path.join(ROOT, "src", "template.html"), encoding="utf-8") as f:
         html = f.read()
 
     updated_at = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
     html = html.replace("/*__SETTINGS_JSON__*/[]", _embed(settings))
     html = html.replace("/*__DAILY_JSON__*/[]", _embed(daily))
+    html = html.replace("/*__ORGANIC_JSON__*/[]", _embed(organic))
     html = html.replace("__UPDATED_AT__", updated_at)
 
     out_path = os.path.join(ROOT, "docs", "index.html")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"wrote {out_path} ({len(settings)} settings, {len(daily)} daily rows, {updated_at})")
+    print(f"wrote {out_path} ({len(settings)} settings, {len(daily)} daily rows, "
+          f"{len(organic)} organic posts, {updated_at})")
 
 
 if __name__ == "__main__":
     meta_settings, meta_daily = build_meta()
     tiktok_settings, tiktok_daily = build_tiktok()
-    render(meta_settings + tiktok_settings, meta_daily + tiktok_daily)
+    organic = _optional(build_instagram_organic) + _optional(build_tiktok_organic, tiktok_daily)
+    render(meta_settings + tiktok_settings, meta_daily + tiktok_daily, organic)
