@@ -399,13 +399,14 @@ _TIKTOK_DATA = re.compile(
 
 
 def _direct_tiktok(item_ids):
-    """Reads each public post page; returns Apify-shaped items for the posts it could read."""
+    """Reads each public post page. Returns Apify-shaped items for the posts it could read,
+    and the ids TikTok reported as gone (deleted or private)."""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                       "(KHTML, like Gecko) Chrome/130.0 Safari/537.36",
         "Accept-Language": "ko-KR,ko;q=0.9",
     }
-    items = {}
+    items, gone = {}, set()
     for i in item_ids:
         # TikTok sometimes serves the page shell without the post data, so retry a few times.
         detail = it = {}
@@ -428,6 +429,8 @@ def _direct_tiktok(item_ids):
         stats = it.get("stats") or {}
         if detail.get("statusCode") or "playCount" not in stats:
             print(f"tiktok page {i} unreadable (status {detail.get('statusCode')})")
+            if detail.get("statusCode"):
+                gone.add(i)
             continue
         items[i] = {
             "id": i, "playCount": stats["playCount"], "diggCount": stats.get("diggCount"),
@@ -436,7 +439,7 @@ def _direct_tiktok(item_ids):
             "webVideoUrl": f"https://www.tiktok.com/@{TIKTOK_HANDLE}/video/{i}",
             "text": it.get("desc"), "videoMeta": {"coverUrl": (it.get("video") or {}).get("cover")},
         }
-    return items
+    return items, gone
 
 
 def _apify_tiktok(item_ids):
@@ -479,8 +482,8 @@ def build_tiktok_organic(tiktok_daily):
     stale = [i for i, keys in item_keys.items()
              if i not in cache or max(last_day.get(k, "") for k in keys) >= cutoff
              or not os.path.exists(os.path.join(THUMB_DIR, f"tt_{i}.jpg"))]
-    fetched = _direct_tiktok(stale) if stale else {}
-    missing = [i for i in stale if i not in fetched]
+    fetched, gone = _direct_tiktok(stale)
+    missing = [i for i in stale if i not in fetched and i not in gone]
     if missing and APIFY_TOKEN:
         try:
             fetched.update(_apify_tiktok(missing))
